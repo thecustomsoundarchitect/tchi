@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Tai Chi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- TODAY -->
+  <section id="screen-today" class="screen" aria-label="Today">
+    <header class="masthead">
+      <h1>My Tai Chi</h1>
+      <p id="today-date" class="date-line"></p>
+    </header>
+
+    <div class="card center">
+      <p id="today-status" class="status-line"></p>
+      <button id="btn-start" class="btn btn-primary btn-hero">Start today's practice</button>
+      <p id="today-detail" class="soft-note"></p>
+    </div>
+
+    <div class="card">
+      <h2>My garden</h2>
+      <div id="garden-mini" class="garden-row" aria-label="This week's completed days"></div>
+      <button class="btn btn-secondary" data-go="garden">See my whole garden</button>
+    </div>
+
+    <div class="card">
+      <button class="btn btn-secondary" data-go="library">Practice one move</button>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section id="screen-practice" class="screen" aria-label="Practice" hidden>
+    <header class="topbar">
+      <button class="btn btn-back" data-go="today">Back</button>
+      <p id="practice-progress" class="topbar-label"></p>
+    </header>
+
+    <div class="card center">
+      <h2 id="move-name"></h2>
+      <div id="move-image-wrap"><img id="move-image" alt=""></div>
+      <ol id="move-steps" class="steps"></ol>
+
+      <div class="timer-wrap" aria-live="polite">
+        <svg id="timer-svg" viewBox="0 0 200 200" width="230" height="230" role="img" aria-label="Countdown timer">
+          <circle class="ring-track" cx="100" cy="100" r="88"></circle>
+          <circle id="ring-fill" class="ring-fill" cx="100" cy="100" r="88"></circle>
+        </svg>
+        <div id="timer-text" class="timer-text">0:00</div>
+      </div>
+
+      <button id="btn-timer" class="btn btn-primary btn-hero">Start the timer</button>
+      <a id="btn-video" class="btn btn-secondary" target="_blank" rel="noopener">Watch the video for this move</a>
+    </div>
+
+    <div id="move-done-overlay" class="overlay" hidden>
+      <div class="overlay-card">
+        <h2>Move complete</h2>
+        <p>Lovely work.</p>
+        <button id="btn-next-move" class="btn btn-primary btn-hero">Next move</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY COMPLETE -->
+  <section id="screen-reward" class="screen" aria-label="Day complete" hidden>
+    <div class="card center reward-card">
+      <h1>Practice complete</h1>
+      <p id="reward-line" class="status-line"></p>
+      <div id="reward-flower" class="reward-flower" aria-hidden="true"></div>
+      <p class="soft-note">A new flower has been added to your garden.</p>
+      <a id="btn-sms" class="btn btn-primary btn-hero">Tell my girls</a>
+      <button class="btn btn-secondary" data-go="garden">See my garden</button>
+      <button class="btn btn-secondary" data-go="today">Done for today</button>
+    </div>
+  </section>
+
+  <!-- GARDEN -->
+  <section id="screen-garden" class="screen" aria-label="My garden" hidden>
+    <header class="topbar">
+      <button class="btn btn-back" data-go="today">Back</button>
+      <p class="topbar-label">My garden</p>
+    </header>
+    <div id="garden-beds"></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="screen-library" class="screen" aria-label="Move library" hidden>
+    <header class="topbar">
+      <button class="btn btn-back" data-go="today">Back</button>
+      <p class="topbar-label">Practice one move</p>
+    </header>
+    <div id="library-list"></div>
+  </section>
+
+  <script src="js/program.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
