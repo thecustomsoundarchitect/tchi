@@ -463,6 +463,36 @@
     .ring-info .ri-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; line-height: 1.2; }
     .ring-info .ri-count { font-size: 0.9rem; color: var(--text-muted); margin-top: 3px; }
 
+    .cal-card {
+      background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px;
+    }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .cal-month { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; }
+    .cal-nav {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--glass-light); border: 1px solid var(--border);
+      color: var(--text-primary); font-size: 1.6rem; line-height: 1;
+      cursor: pointer; transition: transform 0.2s ease;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; padding-bottom: 4px;
+    }
+    .cal-nav:active { transform: scale(0.92); background: var(--surface-solid); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-dow {
+      text-align: center; font-size: 0.72rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 6px;
+    }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; font-size: 0.95rem; color: var(--text-secondary);
+      max-width: 52px; margin: 0 auto; width: 100%;
+    }
+    .cal-day.practiced { background: var(--sage); color: var(--bg); font-weight: 600; }
+    .cal-day.today { border: 2px solid var(--accent); }
+    .cal-day.empty { visibility: hidden; }
+    .cal-note { margin-top: 16px; font-size: 1rem; color: var(--text-secondary); text-align: center; }
+
     .milestone {
       display: flex; align-items: center; gap: 18px;
       padding: 18px 20px;
@@ -549,7 +579,7 @@
   <div id="screen-program" class="screen">
     <div class="content">
       <h2 class="section-title">Your Six Weeks</h2>
-      <p class="section-subtitle">Tap your week to begin. Each week opens when the one before it is finished.</p>
+      <p class="section-subtitle">Tap any week to begin. They are all open, always.</p>
       <div class="weeks-grid" id="weeksGrid"></div>
     </div>
   </div>
@@ -594,6 +624,16 @@
         <div class="summary-stat"><span class="value" id="pSessions">0</span><span class="label">Practices</span></div>
         <div class="summary-divider"></div>
         <div class="summary-stat"><span class="value" id="pBadges">0</span><span class="label">Milestones</span></div>
+      </div>
+      <h3 class="progress-h serif">Your practice days</h3>
+      <div class="cal-card">
+        <div class="cal-head">
+          <button class="cal-nav" data-action="cal-prev">&lsaquo;</button>
+          <span class="cal-month" id="calMonth"></span>
+          <button class="cal-nav" data-action="cal-next">&rsaquo;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <p class="cal-note" id="calNote"></p>
       </div>
       <h3 class="progress-h serif">Week by week</h3>
       <div class="ring-grid" id="ringGrid"></div>
@@ -868,7 +908,8 @@ var state = {
   breathCount: 0,
   badges: {},
   celebrated: {},
-  ratings: {}
+  ratings: {},
+  days: {}
 };
 try {
   var saved = localStorage.getItem("gentleTaiChiBarb");
@@ -881,13 +922,12 @@ function weekDoneCount(w) {
   return PROGRAM[w-1].exercises.filter(function(e){ return state.done[e.id]; }).length;
 }
 function totalDone() { return ALL.filter(function(e){ return state.done[e.id]; }).length; }
-function weekUnlocked(w) {
-  if (w === 1) return true;
-  return weekDoneCount(w-1) === PROGRAM[w-2].exercises.length;
-}
 function currentWeek() {
-  for (var i = 1; i <= 6; i++) { if (!weekUnlocked(i)) return i - 1; if (weekDoneCount(i) < PROGRAM[i-1].exercises.length) return i; }
+  for (var i = 1; i <= 6; i++) { if (weekDoneCount(i) < PROGRAM[i-1].exercises.length) return i; }
   return 6;
+}
+function dayKey(d) {
+  return d.getFullYear() + "-" + (d.getMonth()+1 < 10 ? "0" : "") + (d.getMonth()+1) + "-" + (d.getDate() < 10 ? "0" : "") + d.getDate();
 }
 function fmt(sec) {
   var m = Math.floor(sec / 60), s = sec % 60;
@@ -922,14 +962,12 @@ function renderHome() {
 function renderProgram() {
   var html = "";
   PROGRAM.forEach(function(w, i) {
-    var unlocked = weekUnlocked(w.week);
     var done = weekDoneCount(w.week);
     var total = w.exercises.length;
-    var badge = !unlocked ? '<span class="week-card-badge locked">Locked</span>'
-      : done === total ? '<span class="week-card-badge done">Complete</span>'
+    var badge = done === total ? '<span class="week-card-badge done">Complete</span>'
       : done > 0 ? '<span class="week-card-badge">' + done + ' of ' + total + '</span>'
       : '<span class="week-card-badge">Ready</span>';
-    html += '<button class="week-card' + (unlocked ? '' : ' locked') + '" data-week="' + w.week + '">' +
+    html += '<button class="week-card" data-week="' + w.week + '">' +
       '<img src="' + WEEK_IMAGES[i] + '" alt="">' +
       '<div class="week-card-overlay">' +
       '<span class="week-card-number">Week ' + w.week + '</span>' +
@@ -1042,9 +1080,10 @@ function toggleTimer() {
 /* ---------- completion ---------- */
 function completeExercise() {
   if (!current) return;
-  var firstTime = !state.done[current.id];
   state.done[current.id] = true;
   state.totalSessions++;
+  var dk = dayKey(new Date());
+  state.days[dk] = (state.days[dk] || 0) + 1;
   var today = todayStr();
   if (state.lastDay !== today) {
     var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
@@ -1073,7 +1112,7 @@ function finishFeedback() {
     document.getElementById("weekdoneMark").textContent = "W" + w;
     document.getElementById("weekdoneTitle").textContent = "Week " + w + " complete";
     document.getElementById("weekdoneSub").textContent = w < 6
-      ? "Wonderful work, Barb. Week " + (w+1) + ", " + PROGRAM[w].title + ", is now open for you."
+      ? "Wonderful work, Barb. Week " + (w+1) + ", " + PROGRAM[w].title + ", is waiting whenever you are ready."
       : "You finished the whole six-week journey. One day at a time, and you did it.";
     document.getElementById("screen-weekdone").classList.add("active");
     document.getElementById("screen-weekdone").dataset.goback = "1";
@@ -1107,7 +1146,32 @@ function renderPractice() {
   document.getElementById("practiceGrid").innerHTML = html;
 }
 
+var calOffset = 0;
+function renderCalendar() {
+  var now = new Date();
+  var view = new Date(now.getFullYear(), now.getMonth() + calOffset, 1);
+  var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  document.getElementById("calMonth").textContent = months[view.getMonth()] + " " + view.getFullYear();
+  var todayKey = dayKey(now);
+  var daysInMonth = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+  var firstDow = view.getDay();
+  var html = ["S","M","T","W","T","F","S"].map(function(d){ return '<span class="cal-dow">' + d + '</span>'; }).join("");
+  for (var b = 0; b < firstDow; b++) html += '<span class="cal-day empty"></span>';
+  var practicedCount = 0;
+  for (var d = 1; d <= daysInMonth; d++) {
+    var k = dayKey(new Date(view.getFullYear(), view.getMonth(), d));
+    var practiced = !!state.days[k];
+    if (practiced) practicedCount++;
+    html += '<span class="cal-day' + (practiced ? ' practiced' : '') + (k === todayKey ? ' today' : '') + '">' + d + '</span>';
+  }
+  document.getElementById("calGrid").innerHTML = html;
+  document.getElementById("calNote").textContent = practicedCount === 0
+    ? "No practice days this month yet."
+    : practicedCount + (practicedCount === 1 ? " practice day" : " practice days") + " this month.";
+}
+
 function renderProgress() {
+  renderCalendar();
   document.getElementById("pStreak").textContent = state.streak;
   document.getElementById("pSessions").textContent = state.totalSessions;
   document.getElementById("pBadges").textContent = Object.keys(state.badges).length;
@@ -1213,9 +1277,7 @@ document.body.addEventListener("click", function(ev) {
   if (!el) return;
 
   if (el.dataset.week) {
-    var wn = parseInt(el.dataset.week, 10);
-    if (weekUnlocked(wn)) renderWeek(wn);
-    else toast("Finish Week " + (wn-1) + " first to open this week");
+    renderWeek(parseInt(el.dataset.week, 10));
     return;
   }
   if (el.dataset.exercise) { openExercise(el.dataset.exercise, "week"); return; }
@@ -1251,6 +1313,8 @@ document.body.addEventListener("click", function(ev) {
       show("program");
       break;
     case "close-video": closeVideo(); break;
+    case "cal-prev": calOffset--; renderCalendar(); break;
+    case "cal-next": calOffset++; renderCalendar(); break;
   }
 });
 
