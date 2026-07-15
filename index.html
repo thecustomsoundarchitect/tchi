@@ -2,102 +2,1260 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Tai Chi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tai Chi">
+  <title>Gentle Tai Chi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1412;
+      --surface-solid: #1a1f1c;
+      --text-primary: #f5f5f0;
+      --text-secondary: rgba(245,245,240,0.78);
+      --text-muted: rgba(245,245,240,0.5);
+      --accent: #c4a484;
+      --accent-light: #d4b896;
+      --sage: #8a9a8e;
+      --sage-light: #a8b8ac;
+      --border: rgba(255,255,255,0.1);
+      --glass: rgba(15, 20, 18, 0.75);
+      --glass-light: rgba(255,255,255,0.06);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 20px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+    body, h1, h2, h3 { font-feature-settings: 'lnum' 1; font-variant-numeric: lining-nums; }
+    .hidden { display: none !important; }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--bg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screen.active { opacity: 1; pointer-events: auto; z-index: 10; }
+    .screen::-webkit-scrollbar { width: 0; }
+
+    .content {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 110px 28px 130px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .bg-image {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: 0;
+    }
+    .bg-overlay {
+      position: fixed; inset: 0; z-index: 1;
+      background: linear-gradient(180deg, rgba(15,20,18,0.45) 0%, rgba(15,20,18,0.88) 55%, rgba(15,20,18,0.99) 100%);
+    }
+
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 18px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(15,20,18,0.85), transparent);
+      pointer-events: none;
+    }
+    .top-nav > * { pointer-events: auto; }
+    .top-nav-btn {
+      min-width: 52px; height: 52px; padding: 0 18px;
+      border-radius: 100px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem; font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .top-nav-btn:active { transform: scale(0.94); background: var(--surface-solid); }
+    .top-nav-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--text-primary); }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
+      display: flex; justify-content: center; gap: 8px;
+      background: linear-gradient(to top, rgba(15,20,18,0.97) 0%, rgba(15,20,18,0.8) 65%, transparent 100%);
+    }
+    .nav-item {
+      flex: 1; max-width: 170px;
+      padding: 14px 8px;
+      border-radius: 14px;
+      color: var(--text-muted);
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      background: none; border: none;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.3s ease, background 0.3s ease;
+    }
+    .nav-item.active { color: var(--accent); background: var(--glass-light); }
+
+    /* ---------- HOME ---------- */
+    .home-hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 28px 140px;
+      z-index: 2;
+      max-width: 820px; margin: 0 auto;
+    }
+    .home-hero .greeting {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.4rem; line-height: 1.05;
+      margin-bottom: 10px;
+    }
+    .home-hero .quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--accent-light);
+      margin-bottom: 28px;
+    }
+    .hero-stats { display: flex; gap: 30px; margin-bottom: 36px; }
+    .hero-stat .value {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 2.1rem; color: var(--accent); line-height: 1; display: block;
+    }
+    .hero-stat .label {
+      font-size: 0.78rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 22px 36px;
+      background: var(--accent); color: var(--bg);
+      border: none; border-radius: 100px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem; font-weight: 600;
+      cursor: pointer; width: 100%;
+      transition: transform 0.2s ease;
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px 32px;
+      background: transparent; color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 100px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 500;
+      cursor: pointer; width: 100%; margin-top: 14px;
+      transition: background 0.2s ease;
+    }
+    .btn-secondary:active { background: var(--glass-light); }
+
+    /* ---------- PROGRAM ---------- */
+    .section-title { font-size: 2.6rem; margin-bottom: 6px; }
+    .section-subtitle { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 36px; }
+    .weeks-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .week-card {
+      position: relative; width: 100%; height: 220px;
+      border-radius: var(--radius); overflow: hidden;
+      cursor: pointer; transition: transform 0.3s ease;
+      border: none; padding: 0; text-align: left;
+      font-family: 'Inter', sans-serif; color: var(--text-primary);
+      background: var(--surface-solid);
+    }
+    .week-card:active { transform: scale(0.98); }
+    .week-card img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .week-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(15,20,18,0.25) 0%, rgba(15,20,18,0.92) 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 26px;
+    }
+    .week-card-number {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--accent-light); margin-bottom: 4px; font-weight: 500;
+    }
+    .week-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 4px; }
+    .week-card-meta { font-size: 0.95rem; color: var(--text-secondary); }
+    .week-card-badge {
+      position: absolute; top: 18px; right: 18px;
+      background: var(--accent); color: var(--bg);
+      padding: 8px 16px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .week-card-badge.locked {
+      background: rgba(15,20,18,0.7); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .week-card-badge.done { background: var(--sage); }
+    .week-card.locked { opacity: 0.55; }
+
+    /* ---------- WEEK DETAIL ---------- */
+    .exercise-item {
+      display: flex; align-items: center; gap: 18px;
+      width: 100%;
+      padding: 20px;
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 14px;
+      cursor: pointer; transition: transform 0.2s ease;
+      text-align: left; font-family: 'Inter', sans-serif; color: var(--text-primary);
+    }
+    .exercise-item:active { transform: scale(0.98); background: var(--surface-solid); }
+    .exercise-item.completed { border-color: var(--sage); }
+    .exercise-num {
+      width: 52px; height: 52px; flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--glass-light); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; font-weight: 400; font-size: 1.2rem;
+      color: var(--accent-light);
+    }
+    .exercise-item.completed .exercise-num {
+      background: var(--sage); color: var(--bg); border-color: var(--sage);
+      font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem;
+    }
+    .exercise-info { flex: 1; min-width: 0; }
+    .exercise-name { font-family: 'Cormorant Garamond', serif; font-size: 1.45rem; line-height: 1.2; }
+    .exercise-duration { font-size: 0.9rem; color: var(--text-muted); margin-top: 2px; }
+    .exercise-done-word {
+      flex-shrink: 0; font-size: 0.8rem; font-weight: 600;
+      color: var(--sage-light); text-transform: uppercase; letter-spacing: 0.08em;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .exercise-item.completed .exercise-done-word { opacity: 1; }
+
+    /* ---------- EXERCISE DETAIL ---------- */
+    .detail-title { font-size: 2.6rem; line-height: 1.1; margin-bottom: 6px; }
+    .detail-weekline { color: var(--accent-light); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 26px; }
+    .photo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+    .photo-slot {
+      position: relative; aspect-ratio: 4/3;
+      border-radius: var(--radius); overflow: hidden;
+      background: var(--glass-light);
+    }
+    .photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-placeholder {
+      position: absolute; inset: 0;
+      border: 2px dashed rgba(255,255,255,0.22);
+      border-radius: var(--radius);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; padding: 12px; text-align: center;
+    }
+    .photo-placeholder .pp-label {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--text-secondary);
+    }
+    .photo-placeholder .pp-file {
+      font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem; color: var(--text-muted);
+      word-break: break-all;
+    }
+    .photo-caption {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 8px 12px;
+      background: rgba(15,20,18,0.75);
+      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-secondary); text-align: center;
+    }
+
+    .info-card {
+      background: var(--glass); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px; margin-bottom: 18px;
+    }
+    .info-card h3 {
+      font-size: 1.05rem; font-family: 'Inter', sans-serif; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent-light); margin-bottom: 12px;
+    }
+    .info-card p { font-size: 1.15rem; color: var(--text-secondary); line-height: 1.7; }
+    .info-card ul { list-style: none; }
+    .info-card li {
+      font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6;
+      padding: 8px 0 8px 26px; position: relative;
+    }
+    .info-card li::before {
+      content: ""; position: absolute; left: 4px; top: 1.05em;
+      width: 8px; height: 8px; border-radius: 50%; background: var(--sage);
+    }
+    .video-note { font-size: 0.95rem; color: var(--text-muted); text-align: center; margin: 6px 0 14px; }
+
+    /* ---------- TIMER ---------- */
+    .timer-wrap { display: flex; flex-direction: column; align-items: center; padding: 20px 0 10px; }
+    .timer-container { position: relative; width: 260px; height: 260px; margin-bottom: 30px; }
+    .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .timer-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 5; }
+    .timer-progress { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.2s linear; }
+    .timer-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .timer-time { font-family: 'Inter', sans-serif; font-weight: 200; font-size: 3.4rem; line-height: 1; letter-spacing: 0.02em; }
+    .timer-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-top: 10px; }
+    .timer-controls { display: flex; align-items: center; gap: 22px; }
+    .control-btn {
+      height: 64px; padding: 0 30px;
+      border-radius: 100px;
+      background: var(--glass); border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500;
+      cursor: pointer; transition: transform 0.2s ease;
+    }
+    .control-btn:active { transform: scale(0.94); }
+    .control-btn.play {
+      height: 80px; padding: 0 44px;
+      background: var(--accent); color: var(--bg); border: none;
+      font-size: 1.15rem; font-weight: 600;
+    }
+
+    /* ---------- BREATH ---------- */
+    .breath-overlay {
+      position: fixed; inset: 0; z-index: 145;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(15,20,18,0.97);
+      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+      padding: 30px;
+    }
+    .breath-overlay.active { opacity: 1; pointer-events: auto; }
+    .breath-stage { position: relative; width: 280px; height: 280px; margin-bottom: 44px; }
+    .breath-ball {
+      position: absolute; inset: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, rgba(212,184,150,0.55), rgba(196,164,132,0.15) 70%);
+      border: 1px solid rgba(212,184,150,0.4);
+      transform: scale(0.72);
+    }
+    .breath-halo {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(196,164,132,0.35);
+      transform: scale(0.8);
+    }
+    .breath-word {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+      color: var(--text-primary);
+    }
+    .breath-count {
+      position: absolute; left: 0; right: 0; bottom: -52px;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+      color: var(--accent-light);
+    }
+    .breath-instruction {
+      font-size: 1.1rem; color: var(--text-secondary);
+      text-align: center; max-width: 380px; line-height: 1.7; margin-top: 20px;
+    }
+
+    /* ---------- FEEDBACK ---------- */
+    .center-overlay {
+      position: fixed; inset: 0; z-index: 150;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px; text-align: center;
+      background: var(--bg);
+      opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+      overflow-y: auto;
+    }
+    .center-overlay.active { opacity: 1; pointer-events: auto; }
+    .feedback-title { font-size: 2.4rem; margin-bottom: 8px; }
+    .feedback-subtitle { color: var(--text-secondary); margin-bottom: 40px; font-size: 1.1rem; }
+    .rating-container { display: flex; gap: 16px; margin-bottom: 40px; }
+    .rating-btn {
+      min-width: 110px; padding: 20px 18px;
+      border-radius: var(--radius);
+      background: var(--glass); border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 1.05rem; font-weight: 500; font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .rating-btn:active { transform: scale(0.95); }
+    .rating-btn.selected { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+    /* ---------- WEEK DONE ---------- */
+    .weekdone-mark {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; font-weight: 500; font-size: 2rem; color: var(--bg);
+      margin-bottom: 34px;
+    }
+    .weekdone-title { font-size: 2.8rem; margin-bottom: 10px; }
+    .weekdone-sub { color: var(--text-secondary); font-size: 1.2rem; max-width: 420px; margin-bottom: 44px; }
+
+    /* ---------- PRACTICE ---------- */
+    .practice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .practice-card {
+      padding: 22px;
+      background: var(--glass); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer; transition: transform 0.2s ease;
+      text-align: left; font-family: 'Inter', sans-serif; color: var(--text-primary);
+      min-height: 130px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .practice-card:active { transform: scale(0.96); background: var(--surface-solid); }
+    .practice-card.completed { border-color: var(--sage); }
+    .practice-card .pc-week {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent-light); margin-bottom: 8px;
+    }
+    .practice-card .pc-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; line-height: 1.2; }
+    .practice-card .pc-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; }
+
+    /* ---------- PROGRESS ---------- */
+    .summary-card {
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, rgba(196,164,132,0.14), rgba(138,154,142,0.1));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 34px;
+    }
+    .summary-stat { text-align: center; }
+    .summary-stat .value { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 2.6rem; color: var(--accent); line-height: 1; display: block; }
+    .summary-stat .label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; display: block; }
+    .summary-divider { width: 1px; height: 56px; background: var(--border); }
+
+    .progress-h { font-size: 1.7rem; margin: 30px 0 18px; }
+    .ring-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .ring-card {
+      display: flex; align-items: center; gap: 18px;
+      padding: 18px 20px;
+      background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .ring-wrap { position: relative; width: 78px; height: 78px; flex-shrink: 0; }
+    .ring-wrap svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .ring-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+    .ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; }
+    .ring-card.full .ring-fill { stroke: var(--sage-light); }
+    .ring-label {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; font-weight: 400; font-size: 1.2rem; color: var(--text-primary);
+    }
+    .ring-info .ri-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; line-height: 1.2; }
+    .ring-info .ri-count { font-size: 0.9rem; color: var(--text-muted); margin-top: 3px; }
+
+    .milestone {
+      display: flex; align-items: center; gap: 18px;
+      padding: 18px 20px;
+      background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 12px;
+      opacity: 0.55;
+    }
+    .milestone.unlocked {
+      opacity: 1;
+      border-color: rgba(196,164,132,0.5);
+      background: linear-gradient(135deg, rgba(196,164,132,0.12), rgba(15,20,18,0.6));
+    }
+    .medallion {
+      width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%;
+      background: var(--glass-light); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; font-weight: 400; font-size: 1.1rem; color: var(--text-muted);
+    }
+    .milestone.unlocked .medallion { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+    .milestone-name { font-size: 1.1rem; font-weight: 500; }
+    .milestone-desc { font-size: 0.92rem; color: var(--text-muted); }
+    .milestone-earned { margin-left: auto; font-size: 0.78rem; color: var(--sage-light); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ---------- VIDEO MODAL (for future links) ---------- */
+    .video-modal {
+      position: fixed; inset: 0; z-index: 160;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      background: rgba(15,20,18,0.96);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .video-modal.active { opacity: 1; pointer-events: auto; }
+    .video-box { width: 100%; max-width: 640px; }
+    .video-frame { width: 100%; aspect-ratio: 16/9; background: var(--surface-solid); border-radius: var(--radius); overflow: hidden; }
+    .video-frame iframe { width: 100%; height: 100%; border: none; }
+
+    /* ---------- TOAST ---------- */
+    .toast {
+      position: fixed; top: 90px; left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      padding: 16px 30px;
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border); border-radius: 100px;
+      font-size: 1rem; font-weight: 500;
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: all 0.4s ease; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ---------- iPad landscape and larger ---------- */
+    @media (min-width: 900px) {
+      .weeks-grid { grid-template-columns: 1fr 1fr; }
+      .practice-grid { grid-template-columns: repeat(3, 1fr); }
+      .ring-grid { grid-template-columns: repeat(3, 1fr); }
+      .home-hero { padding-bottom: 160px; }
+    }
+    @media (max-width: 430px) {
+      html { font-size: 18px; }
+      .photo-row { grid-template-columns: 1fr; }
+      .ring-grid { grid-template-columns: 1fr; }
+      .rating-container { flex-direction: column; width: 100%; max-width: 320px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- TODAY -->
-  <section id="screen-today" class="screen" aria-label="Today">
-    <header class="masthead">
-      <h1>My Tai Chi</h1>
-      <p id="today-date" class="date-line"></p>
-    </header>
-
-    <div class="card center">
-      <p id="today-status" class="status-line"></p>
-      <button id="btn-start" class="btn btn-primary btn-hero">Start today's practice</button>
-      <p id="today-detail" class="soft-note"></p>
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <img class="bg-image" src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=1200&q=80" alt="">
+    <div class="bg-overlay"></div>
+    <div class="home-hero">
+      <h1 class="greeting">Hello Barb</h1>
+      <p class="quote">"One day at a time."</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="value" id="statStreak">0</span><span class="label">Day streak</span></div>
+        <div class="hero-stat"><span class="value" id="statDone">0</span><span class="label">Done of 52</span></div>
+        <div class="hero-stat"><span class="value" id="statWeek">1</span><span class="label">Your week</span></div>
+      </div>
+      <button class="btn-primary" data-action="continue">Start Today's Practice</button>
+      <button class="btn-secondary" data-action="nav-practice">Free Practice</button>
     </div>
+  </div>
 
-    <div class="card">
-      <h2>My garden</h2>
-      <div id="garden-mini" class="garden-row" aria-label="This week's completed days"></div>
-      <button class="btn btn-secondary" data-go="garden">See my whole garden</button>
+  <!-- PROGRAM -->
+  <div id="screen-program" class="screen">
+    <div class="content">
+      <h2 class="section-title">Your Six Weeks</h2>
+      <p class="section-subtitle">Tap your week to begin. Each week opens when the one before it is finished.</p>
+      <div class="weeks-grid" id="weeksGrid"></div>
     </div>
+  </div>
 
-    <div class="card">
-      <button class="btn btn-secondary" data-go="library">Practice one move</button>
+  <!-- WEEK DETAIL -->
+  <div id="screen-week" class="screen">
+    <div class="top-nav">
+      <button class="top-nav-btn" data-action="nav-program">Back</button>
+      <span class="top-nav-title" id="weekNavTitle"></span>
+      <div style="width:52px"></div>
     </div>
-  </section>
+    <div class="content" id="weekContent"></div>
+  </div>
+
+  <!-- EXERCISE DETAIL -->
+  <div id="screen-exercise" class="screen">
+    <div class="top-nav">
+      <button class="top-nav-btn" data-action="close-exercise">Back</button>
+      <span class="top-nav-title" id="exNavTitle"></span>
+      <button class="top-nav-btn" data-action="toggle-breath">Breathe</button>
+    </div>
+    <div class="content" id="exerciseContent"></div>
+  </div>
 
   <!-- PRACTICE -->
-  <section id="screen-practice" class="screen" aria-label="Practice" hidden>
-    <header class="topbar">
-      <button class="btn btn-back" data-go="today">Back</button>
-      <p id="practice-progress" class="topbar-label"></p>
-    </header>
+  <div id="screen-practice" class="screen">
+    <div class="content">
+      <h2 class="section-title">Free Practice</h2>
+      <p class="section-subtitle">Any movement, any time, at your own pace.</p>
+      <div class="practice-grid" id="practiceGrid"></div>
+    </div>
+  </div>
 
-    <div class="card center">
-      <h2 id="move-name"></h2>
-      <div id="move-image-wrap"><img id="move-image" alt=""></div>
-      <ol id="move-steps" class="steps"></ol>
-
-      <div class="timer-wrap" aria-live="polite">
-        <svg id="timer-svg" viewBox="0 0 200 200" width="230" height="230" role="img" aria-label="Countdown timer">
-          <circle class="ring-track" cx="100" cy="100" r="88"></circle>
-          <circle id="ring-fill" class="ring-fill" cx="100" cy="100" r="88"></circle>
-        </svg>
-        <div id="timer-text" class="timer-text">0:00</div>
+  <!-- PROGRESS -->
+  <div id="screen-progress" class="screen">
+    <div class="content">
+      <h2 class="section-title">Your Progress</h2>
+      <p class="section-subtitle">Every practice counts. Watch it add up.</p>
+      <div class="summary-card">
+        <div class="summary-stat"><span class="value" id="pStreak">0</span><span class="label">Day streak</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat"><span class="value" id="pSessions">0</span><span class="label">Practices</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat"><span class="value" id="pBadges">0</span><span class="label">Milestones</span></div>
       </div>
-
-      <button id="btn-timer" class="btn btn-primary btn-hero">Start the timer</button>
-      <a id="btn-video" class="btn btn-secondary" target="_blank" rel="noopener">Watch the video for this move</a>
+      <h3 class="progress-h serif">Week by week</h3>
+      <div class="ring-grid" id="ringGrid"></div>
+      <h3 class="progress-h serif">Milestones</h3>
+      <div id="milestoneList"></div>
     </div>
+  </div>
 
-    <div id="move-done-overlay" class="overlay" hidden>
-      <div class="overlay-card">
-        <h2>Move complete</h2>
-        <p>Lovely work.</p>
-        <button id="btn-next-move" class="btn btn-primary btn-hero">Next move</button>
-      </div>
+  <!-- BREATH OVERLAY -->
+  <div id="breathOverlay" class="breath-overlay">
+    <div class="breath-stage">
+      <div class="breath-halo" id="breathHalo"></div>
+      <div class="breath-ball" id="breathBall"></div>
+      <div class="breath-word" id="breathWord">Ready</div>
+      <div class="breath-count" id="breathCount"></div>
     </div>
-  </section>
+    <p class="breath-instruction">Breathe in gently through your nose for 4 counts.<br>Breathe out slowly for 6 counts.</p>
+    <button class="btn-secondary" data-action="toggle-breath" style="max-width: 240px;">Close</button>
+  </div>
 
-  <!-- DAY COMPLETE -->
-  <section id="screen-reward" class="screen" aria-label="Day complete" hidden>
-    <div class="card center reward-card">
-      <h1>Practice complete</h1>
-      <p id="reward-line" class="status-line"></p>
-      <div id="reward-flower" class="reward-flower" aria-hidden="true"></div>
-      <p class="soft-note">A new flower has been added to your garden.</p>
-      <a id="btn-sms" class="btn btn-primary btn-hero">Tell my girls</a>
-      <button class="btn btn-secondary" data-go="garden">See my garden</button>
-      <button class="btn btn-secondary" data-go="today">Done for today</button>
+  <!-- FEEDBACK -->
+  <div id="screen-feedback" class="center-overlay">
+    <h2 class="feedback-title">Well done, Barb</h2>
+    <p class="feedback-subtitle" id="feedbackName"></p>
+    <div class="rating-container">
+      <button class="rating-btn" data-rating="hard">Hard</button>
+      <button class="rating-btn" data-rating="okay">Okay</button>
+      <button class="rating-btn" data-rating="good">Good</button>
     </div>
-  </section>
+    <button class="btn-primary" data-action="finish-feedback" style="max-width: 320px;">Continue</button>
+  </div>
 
-  <!-- GARDEN -->
-  <section id="screen-garden" class="screen" aria-label="My garden" hidden>
-    <header class="topbar">
-      <button class="btn btn-back" data-go="today">Back</button>
-      <p class="topbar-label">My garden</p>
-    </header>
-    <div id="garden-beds"></div>
-  </section>
+  <!-- WEEK DONE -->
+  <div id="screen-weekdone" class="center-overlay">
+    <div class="weekdone-mark" id="weekdoneMark">W1</div>
+    <h2 class="weekdone-title" id="weekdoneTitle">Week 1 complete</h2>
+    <p class="weekdone-sub" id="weekdoneSub"></p>
+    <button class="btn-primary" data-action="close-weekdone" style="max-width: 320px;">Keep Going</button>
+  </div>
 
-  <!-- LIBRARY -->
-  <section id="screen-library" class="screen" aria-label="Move library" hidden>
-    <header class="topbar">
-      <button class="btn btn-back" data-go="today">Back</button>
-      <p class="topbar-label">Practice one move</p>
-    </header>
-    <div id="library-list"></div>
-  </section>
+  <!-- VIDEO MODAL -->
+  <div id="videoModal" class="video-modal">
+    <div class="video-box">
+      <div class="video-frame" id="videoFrame"></div>
+      <button class="btn-secondary" data-action="close-video">Close Video</button>
+    </div>
+  </div>
 
-  <script src="js/program.js"></script>
-  <script src="js/app.js"></script>
+  <div id="toast" class="toast"></div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-action="nav-home">Home</button>
+    <button class="nav-item" data-action="nav-program">Program</button>
+    <button class="nav-item" data-action="nav-practice">Practice</button>
+    <button class="nav-item" data-action="nav-progress">Progress</button>
+  </nav>
+
+<script>
+(function() {
+"use strict";
+
+/* Videos are intentionally blank in this build. See VIDEOS_NEEDED.md.
+   Photos load from img/<id>a.jpg and img/<id>b.jpg when supplied.
+   See IMAGES_NEEDED.md for the full checklist. */
+
+var WEEK_IMAGES = [
+  "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
+  "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
+  "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
+  "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&q=80",
+  "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&q=80",
+  "https://images.unsplash.com/photo-1447452001602-7090c77463ce?w=800&q=80"
+];
+
+var PROGRAM = [
+{ week: 1, title: "Foundation & Awareness", subtitle: "Getting comfortable, mostly seated", exercises: [
+  { id: "w1-01", name: "Seated Mountain Pose", duration: 120,
+    what: "Sit tall on the front half of your chair with your feet flat on the floor. Rest your hands on your thighs. Breathe slowly and let your shoulders soften down, away from your ears.",
+    helps: ["Improves posture", "Calms the mind and body", "Wakes up the muscles along your spine"] },
+  { id: "w1-02", name: "Neck Rolls & Stretches", duration: 120,
+    what: "Lower your right ear toward your right shoulder. Roll your chin slowly down toward your chest and over to the left side. Move gently and never force the stretch.",
+    helps: ["Releases neck and shoulder tension", "Keeps your neck flexible for looking around", "Eases stiffness from sitting"] },
+  { id: "w1-03", name: "Shoulder Circles", duration: 120,
+    what: "Lift both shoulders up toward your ears. Roll them back and down in a slow, smooth circle. After ten circles, go the other way.",
+    helps: ["Loosens stiff shoulders", "Opens the chest for easier breathing", "Improves circulation in the upper body"] },
+  { id: "w1-04", name: "Ankle & Foot Circles", duration: 120,
+    what: "Lift one foot slightly off the floor. Circle the ankle ten times each way, then point and flex your toes. Switch feet.",
+    helps: ["Keeps ankles strong and flexible", "Helps prevent trips and falls", "Boosts blood flow in the lower legs"] },
+  { id: "w1-05", name: "Wrist Circles & Hand Stretches", duration: 120,
+    what: "Reach your arms gently forward. Circle your wrists ten times each way. Then spread your fingers wide and close them into soft fists.",
+    helps: ["Eases stiff wrists and fingers", "Helps with gripping jars, keys, and handles", "Keeps hands nimble"] },
+  { id: "w1-06", name: "Seated Marching", duration: 120,
+    what: "Sit tall and lift your right knee, then lower it. Lift the left knee. March at a steady, easy rhythm and let your arms swing if that feels good.",
+    helps: ["Strengthens hips and thighs", "Gets your heart gently working", "Builds the leg strength used for walking"] },
+  { id: "w1-07", name: "Side Bends", duration: 120,
+    what: "Reach your right arm up and lean gently over to the left. Keep both hips settled on the chair. Come back to center and switch sides.",
+    helps: ["Stretches the muscles along your ribs", "Keeps your waist flexible", "Helps you take fuller breaths"] },
+  { id: "w1-08", name: "Gentle Torso Twists", duration: 120,
+    what: "Place your right hand on your left knee. Turn slowly to look over your left shoulder. Breathe there, return to center, then switch sides.",
+    helps: ["Keeps your spine mobile", "Gently aids digestion", "Makes turning and reaching easier"] }
+]},
+{ week: 2, title: "Flowing Movements", subtitle: "Adding grace and rhythm", exercises: [
+  { id: "w2-01", name: "Wave Hands Like Clouds", duration: 180,
+    what: "Float your right hand up to eye level with the palm facing you. Draw it slowly across your body while the left hand follows below. Move like drifting clouds.",
+    helps: ["Trains smooth, calm coordination", "Relaxes the shoulders and arms", "A classic tai chi movement for quiet focus"] },
+  { id: "w2-02", name: "Parting the Wild Horse's Mane", duration: 180,
+    what: "Imagine holding a large soft ball in front of you. Sweep one hand up and out while the other presses gently down and back. Switch sides slowly.",
+    helps: ["Opens the chest and shoulders", "Builds gentle whole-body coordination", "Encourages tall, confident posture"] },
+  { id: "w2-03", name: "Leg Extensions", duration: 120,
+    what: "Straighten one leg out in front of you and hold for three counts. Lower it slowly with control. Switch legs and keep your back tall the whole time.",
+    helps: ["Strengthens the thigh muscles that protect your knees", "Makes standing up from chairs easier", "Improves leg control"] },
+  { id: "w2-04", name: "Arm Circles Forward & Back", duration: 120,
+    what: "Reach both arms out to the sides. Make small, slow circles forward, then reverse. Keep your shoulders relaxed and the circles gentle.",
+    helps: ["Keeps shoulders strong and mobile", "Improves circulation in the arms", "Helps with reaching and dressing"] },
+  { id: "w2-05", name: "Chest Expansion", duration: 120,
+    what: "Bring both arms forward at shoulder height. Open them wide to the sides as you breathe in. Bring them back together as you breathe out.",
+    helps: ["Opens the chest for deeper breaths", "Counteracts rounded-forward posture", "Gently strengthens the upper back"] },
+  { id: "w2-06", name: "Knee Lifts with Arm Pull", duration: 150,
+    what: "Reach both arms overhead, then pull them down as you lift your right knee. Lower and switch sides. Move slowly, like pulling something soft down from a shelf.",
+    helps: ["Works legs and arms together", "Trains balance while seated", "Builds coordination for daily tasks"] },
+  { id: "w2-07", name: "Side Leg Lifts", duration: 120,
+    what: "Hold the sides of the chair seat. Slide one leg out to the side with the knee soft, then bring it back. Switch legs.",
+    helps: ["Strengthens the outer hips", "Hip strength keeps walking steady", "Supports better balance"] },
+  { id: "w2-08", name: "Forward Fold Stretch", duration: 120,
+    what: "Slide your hands slowly down your legs toward your shins, only as far as comfortable. Let your head and neck relax. Roll back up slowly.",
+    helps: ["Stretches the back and hamstrings", "Relieves lower back tightness", "Teaches slow, safe bending"] },
+  { id: "w2-09", name: "Heel-Toe Rocks", duration: 120,
+    what: "Lift both heels and press onto your toes. Lower them, then lift your toes and rock back onto your heels. Rock gently back and forth in rhythm.",
+    helps: ["Strengthens calves and shins", "Improves the ankle motion used in every step", "Helps prevent stumbles"] }
+]},
+{ week: 3, title: "Building Strength & Balance", subtitle: "First movements holding the chair", exercises: [
+  { id: "w3-01", name: "White Crane Spreads Wings", duration: 180,
+    what: "Open both arms slowly out to the sides like wings. Breathe in as they rise and out as they float down. Let each breath set the speed, not the clock.",
+    helps: ["Improves balance and poise", "Opens the chest and shoulders", "Builds calm, controlled movement"] },
+  { id: "w3-02", name: "Brush Knee and Push", duration: 180,
+    what: "Sweep your right hand down past your right knee while your left palm presses gently forward. Alternate sides in one smooth, unhurried motion.",
+    helps: ["Coordinates the two sides of the body", "Gently strengthens arms and shoulders", "One of the core tai chi forms"] },
+  { id: "w3-03", name: "Standing Chair Squats", duration: 150,
+    what: "Stand in front of the chair. Lower yourself slowly as if to sit, touch down lightly, then stand back up. Push through your heels.",
+    helps: ["Builds the leg strength for standing up on your own", "Strengthens knees and hips safely", "Protects your independence"] },
+  { id: "w3-04", name: "Hip Circles", duration: 120,
+    what: "Stand holding the chair back, or sit tall with hands on your hips. Circle your hips slowly one way, then the other. Keep your shoulders level.",
+    helps: ["Loosens the hips and lower back", "Improves balance through your middle", "Eases stiffness"] },
+  { id: "w3-05", name: "Overhead Reach", duration: 120,
+    what: "Lace your fingers together and turn your palms upward. Press gently toward the ceiling and grow tall. Hold, breathe, and float your arms back down.",
+    helps: ["Stretches the whole upper body", "Improves reach for high shelves", "Encourages full, deep breaths"] },
+  { id: "w3-06", name: "Figure-8 Arm Movements", duration: 150,
+    what: "Trace a large, slow figure 8 in the air with one hand, letting your waist follow the movement. Switch hands. Keep it soft and flowing.",
+    helps: ["Improves shoulder mobility", "Trains smooth coordination", "Gently works the waist"] },
+  { id: "w3-07", name: "Calf Raises", duration: 120,
+    what: "Hold the chair back with both hands. Rise up onto your toes and pause for two counts. Lower with control and repeat at an easy pace.",
+    helps: ["Strengthens calves for walking and stairs", "Improves push-off power in each step", "Steadies the ankles"] },
+  { id: "w3-08", name: "Cross-Body Arm Swing", duration: 120,
+    what: "Swing your right arm gently across your body to the left, letting your waist turn a little with it. Alternate arms in a relaxed, easy rhythm.",
+    helps: ["Loosens the spine and waist", "Relaxes the shoulders", "Builds gentle turning strength"] },
+  { id: "w3-09", name: "Seated Cat-Cow Stretch", duration: 120,
+    what: "Rest your hands on your knees. Lift your chest and look gently up, then round your back and tuck your chin. Flow between the two with your breath.",
+    helps: ["Keeps the whole spine flexible", "Eases back stiffness", "Links breath with movement"] },
+  { id: "w3-10", name: "Single Arm Reach", duration: 120,
+    what: "Reach one arm forward and slightly up, following your hand with your eyes. Draw it back slowly and switch arms.",
+    helps: ["Improves shoulder range", "Trains eye and hand coordination", "A gentle stretch through the side body"] }
+]},
+{ week: 4, title: "Advanced Flow & Coordination", subtitle: "Linking movements together", exercises: [
+  { id: "w4-01", name: "Repulse Monkey (Seated)", duration: 180,
+    what: "Draw your right hand back beside your ear while your left palm presses forward. Alternate hands like a slow, gentle wheel turning.",
+    helps: ["Coordinates opposite arm movements", "Softly strengthens the shoulders", "Improves focus and rhythm"] },
+  { id: "w4-02", name: "Fair Lady Works Shuttles", duration: 180,
+    what: "Raise one hand as if lifting a curtain overhead while the other palm presses gently to the side. Switch sides in one weaving, continuous motion.",
+    helps: ["Improves overhead reach", "Trains flowing coordination", "Builds gentle arm endurance"] },
+  { id: "w4-03", name: "Snake Creeps Down (Modified)", duration: 150,
+    what: "Sitting tall, slide one hand slowly down the inside of the same-side leg as you breathe out. Rise back up slowly. Switch sides.",
+    helps: ["Stretches the legs and back safely", "Practices controlled lowering", "Builds confidence bending down"] },
+  { id: "w4-04", name: "Standing Heel Raises with Chair", duration: 150,
+    what: "Hold the chair back with both hands. Lift one heel, lower it, then lift the other, like walking in place very slowly.",
+    helps: ["Strengthens ankles and calves", "Trains the weight shift used in walking", "Supports steady balance"] },
+  { id: "w4-05", name: "Diagonal Arm Reaches", duration: 150,
+    what: "Reach your right hand up and across to the left, as if placing something on a high shelf. Bring it down to your right hip. Switch sides.",
+    helps: ["Trains the diagonal reaches of real life", "Improves shoulder and waist mobility", "Sharpens coordination"] },
+  { id: "w4-06", name: "Torso Circles", duration: 120,
+    what: "Sit tall with your hands on your thighs. Circle your upper body slowly: forward, to the side, back, and around. Reverse direction halfway.",
+    helps: ["Loosens the lower back", "Improves core control", "Gently massages the hips"] },
+  { id: "w4-07", name: "Alternating Punches", duration: 120,
+    what: "Make soft fists at your waist. Press one fist slowly forward as if pushing through water, then draw it back as the other presses out.",
+    helps: ["Builds gentle arm and shoulder strength", "Improves coordination and focus", "Energizing without strain"] },
+  { id: "w4-08", name: "Seated Bicycle Legs", duration: 120,
+    what: "Hold the sides of the chair seat and lean back slightly. Pedal your legs slowly as if riding a bicycle. Rest whenever you need to.",
+    helps: ["Strengthens thighs and hips", "Gets the heart working gently", "Improves leg coordination"] },
+  { id: "w4-09", name: "Wall Push-Ups (Using Chair)", duration: 120,
+    what: "Stand facing a wall or a sturdy chair back at arm's length. Place your hands on it, bend your elbows to lean in, then push back out slowly.",
+    helps: ["Strengthens arms and chest safely", "Helps with pushing doors and getting up", "No floor work needed"] },
+  { id: "w4-10", name: "Balance Practice (Holding Chair)", duration: 180,
+    what: "Hold the chair back and lift one foot slightly off the floor. Hold for five slow counts, then switch feet. Keep a fingertip on the chair at all times.",
+    helps: ["Directly trains steadiness on your feet", "One of the best fall-prevention exercises", "Builds quiet confidence"] }
+]},
+{ week: 5, title: "Strength & Stability", subtitle: "The classic forms, your way", exercises: [
+  { id: "w5-01", name: "Golden Rooster (Seated Balance)", duration: 180,
+    what: "Sitting tall, lift your right knee a little while floating your left arm upward. Hold briefly, lower both, then switch sides.",
+    helps: ["Trains balance and core strength together", "Coordinates opposite arm and leg", "Builds calm concentration"] },
+  { id: "w5-02", name: "Step Back and Repulse", duration: 180,
+    what: "Combine a gentle backward reach of one hand with a forward press of the other palm. Let your waist lead and your arms follow. Slow is correct.",
+    helps: ["Strengthens the waist and shoulders", "Trains moving in two directions at once", "Deepens the flowing tai chi feeling"] },
+  { id: "w5-03", name: "Turn, Deflect, and Push", duration: 180,
+    what: "Turn your upper body gently to one side. Sweep one arm across as if parting water, then finish with a soft push forward. Switch sides.",
+    helps: ["Builds gentle turning strength", "Improves coordination in sequence", "A classic form made comfortable"] },
+  { id: "w5-04", name: "Standing Leg Swings (Holding Chair)", duration: 150,
+    what: "Hold the chair back and stand tall. Swing one leg gently forward and back in small swings. Switch legs halfway through.",
+    helps: ["Loosens the hips", "Trains single-leg balance", "Improves your walking stride"] },
+  { id: "w5-05", name: "Seated Rowing Motion", duration: 120,
+    what: "Reach both arms forward at shoulder height. Pull back slowly, squeezing your shoulder blades together, then release forward, as if rowing on a calm lake.",
+    helps: ["Strengthens the upper back", "Improves posture", "Eases shoulder tension"] },
+  { id: "w5-06", name: "Side-to-Side Weight Shifts", duration: 120,
+    what: "Stand holding the chair, or sit tall. Shift your weight slowly onto the right side, pause, then across to the left. Imagine a string lifting your head.",
+    helps: ["Trains the weight shifting at the heart of tai chi", "Improves balance", "Builds hip stability"] },
+  { id: "w5-07", name: "Arm Waves", duration: 120,
+    what: "Let your arms float up and down like seaweed moving in water, one after the other. Keep your wrists and fingers soft.",
+    helps: ["Relaxes the whole upper body", "Keeps shoulders and elbows mobile", "Calming and meditative"] },
+  { id: "w5-08", name: "Knee Circles", duration: 120,
+    what: "Sitting tall, lift one knee slightly and draw small, slow circles with it. Switch legs. Hold the chair seat for support.",
+    helps: ["Loosens hips and knees", "Improves leg control", "Very gentle on the joints"] },
+  { id: "w5-09", name: "Shoulder Blade Squeezes", duration: 120,
+    what: "Sit tall with your arms relaxed at your sides. Draw your shoulder blades together and hold for three counts, then release softly.",
+    helps: ["Strengthens the muscles that hold you upright", "Counters rounded shoulders", "Eases upper back aches"] },
+  { id: "w5-10", name: "Standing Marching (Holding Chair)", duration: 150,
+    what: "Hold the chair back and march gently in place, lifting each knee to a comfortable height. Keep your breathing easy.",
+    helps: ["Builds standing leg strength", "Trains balance while moving", "Gets the heart gently working"] }
+]},
+{ week: 6, title: "Complete Integration", subtitle: "Your complete practice", exercises: [
+  { id: "w6-01", name: "Full Sequence Practice", duration: 720,
+    what: "Flow through your favourite movements from all six weeks: clouds, crane, brush knee, and more. There is no wrong order. Keep it slow and kind, 10 to 15 minutes.",
+    helps: ["Puts the whole program together", "Builds gentle endurance", "Becomes your complete daily practice"] },
+  { id: "w6-02", name: "Standing Balance Series", duration: 180,
+    what: "Hold the chair and practice your one-foot balance from Week 4. If you feel steady, lighten your grip to two fingers. The chair is always there. Use it freely.",
+    helps: ["The strongest protection against falls", "Builds real-world steadiness", "Confidence grows week by week"] },
+  { id: "w6-03", name: "Advanced Coordination Patterns", duration: 180,
+    what: "March gently in place while your arms wave like clouds. If the pattern breaks, smile and start again. This one is about focus, not perfection.",
+    helps: ["Trains brain and body together", "Sharpens focus and memory", "Improves doing two things at once"] },
+  { id: "w6-04", name: "Breath-Movement Integration", duration: 180,
+    what: "Breathe in as your arms open or rise. Breathe out as they close or sink. Let the breath be the metronome for everything you do.",
+    helps: ["Deepens the calming effect of practice", "Lowers stress and heart rate", "The heart of tai chi"] },
+  { id: "w6-05", name: "Closing Meditation", duration: 240,
+    what: "Return to your tall mountain pose. Rest both hands over your heart. Take slow breaths. Notice how far you have come.",
+    helps: ["Settles the body and mind", "Locks in the benefits of practice", "A peaceful way to finish"] }
+]}
+];
+
+var ALL = [];
+PROGRAM.forEach(function(w) { w.exercises.forEach(function(e) { e.week = w.week; ALL.push(e); }); });
+
+var MILESTONES = [
+  { id: "first",   label: "1",  name: "First Practice",  desc: "Complete your very first exercise", test: function(s){ return s.totalSessions >= 1; } },
+  { id: "streak3", label: "3",  name: "Three Days",      desc: "Practice three days in a row",      test: function(s){ return s.bestStreak >= 3; } },
+  { id: "streak7", label: "7",  name: "One Full Week",   desc: "Practice seven days in a row",      test: function(s){ return s.bestStreak >= 7; } },
+  { id: "week1",   label: "W1", name: "Foundation",      desc: "Finish every Week 1 exercise",      test: function(s){ return weekDoneCount(1) === PROGRAM[0].exercises.length; } },
+  { id: "week2",   label: "W2", name: "Flowing",         desc: "Finish every Week 2 exercise",      test: function(s){ return weekDoneCount(2) === PROGRAM[1].exercises.length; } },
+  { id: "week3",   label: "W3", name: "Strong & Steady", desc: "Finish every Week 3 exercise",      test: function(s){ return weekDoneCount(3) === PROGRAM[2].exercises.length; } },
+  { id: "week4",   label: "W4", name: "In the Flow",     desc: "Finish every Week 4 exercise",      test: function(s){ return weekDoneCount(4) === PROGRAM[3].exercises.length; } },
+  { id: "week5",   label: "W5", name: "Rock Solid",      desc: "Finish every Week 5 exercise",      test: function(s){ return weekDoneCount(5) === PROGRAM[4].exercises.length; } },
+  { id: "week6",   label: "W6", name: "Integration",     desc: "Finish every Week 6 practice",      test: function(s){ return weekDoneCount(6) === PROGRAM[5].exercises.length; } },
+  { id: "half",    label: "26", name: "Halfway There",   desc: "Complete 26 of the 52 exercises",   test: function(s){ return totalDone() >= 26; } },
+  { id: "all52",   label: "52", name: "The Whole Journey", desc: "Complete all 52 exercises",       test: function(s){ return totalDone() >= 52; } },
+  { id: "breath5", label: "B",  name: "Calm Breather",   desc: "Use the breathing guide 5 times",   test: function(s){ return s.breathCount >= 5; } }
+];
+
+/* ---------- state ---------- */
+var state = {
+  done: {},            /* exercise id -> true */
+  totalSessions: 0,
+  streak: 0,
+  bestStreak: 0,
+  lastDay: "",
+  breathCount: 0,
+  badges: {},
+  celebrated: {},
+  ratings: {}
+};
+try {
+  var saved = localStorage.getItem("gentleTaiChiBarb");
+  if (saved) { var s = JSON.parse(saved); Object.keys(state).forEach(function(k){ if (s[k] !== undefined) state[k] = s[k]; }); }
+} catch (e) {}
+
+function save() { try { localStorage.setItem("gentleTaiChiBarb", JSON.stringify(state)); } catch (e) {} }
+function todayStr() { return new Date().toDateString(); }
+function weekDoneCount(w) {
+  return PROGRAM[w-1].exercises.filter(function(e){ return state.done[e.id]; }).length;
+}
+function totalDone() { return ALL.filter(function(e){ return state.done[e.id]; }).length; }
+function weekUnlocked(w) {
+  if (w === 1) return true;
+  return weekDoneCount(w-1) === PROGRAM[w-2].exercises.length;
+}
+function currentWeek() {
+  for (var i = 1; i <= 6; i++) { if (!weekUnlocked(i)) return i - 1; if (weekDoneCount(i) < PROGRAM[i-1].exercises.length) return i; }
+  return 6;
+}
+function fmt(sec) {
+  var m = Math.floor(sec / 60), s = sec % 60;
+  return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+}
+function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+/* ---------- navigation ---------- */
+var screens = ["home", "program", "week", "exercise", "practice", "progress"];
+function show(name) {
+  screens.forEach(function(s) {
+    document.getElementById("screen-" + s).classList.toggle("active", s === name);
+  });
+  var navMap = { home: "nav-home", program: "nav-program", week: "nav-program", exercise: null, practice: "nav-practice", progress: "nav-progress" };
+  document.querySelectorAll(".nav-item").forEach(function(b) {
+    b.classList.toggle("active", b.getAttribute("data-action") === navMap[name]);
+  });
+  if (name === "home") renderHome();
+  if (name === "program") renderProgram();
+  if (name === "practice") renderPractice();
+  if (name === "progress") renderProgress();
+  document.getElementById("screen-" + name).scrollTop = 0;
+}
+
+/* ---------- renders ---------- */
+function renderHome() {
+  document.getElementById("statStreak").textContent = state.streak;
+  document.getElementById("statDone").textContent = totalDone();
+  document.getElementById("statWeek").textContent = currentWeek();
+}
+
+function renderProgram() {
+  var html = "";
+  PROGRAM.forEach(function(w, i) {
+    var unlocked = weekUnlocked(w.week);
+    var done = weekDoneCount(w.week);
+    var total = w.exercises.length;
+    var badge = !unlocked ? '<span class="week-card-badge locked">Locked</span>'
+      : done === total ? '<span class="week-card-badge done">Complete</span>'
+      : done > 0 ? '<span class="week-card-badge">' + done + ' of ' + total + '</span>'
+      : '<span class="week-card-badge">Ready</span>';
+    html += '<button class="week-card' + (unlocked ? '' : ' locked') + '" data-week="' + w.week + '">' +
+      '<img src="' + WEEK_IMAGES[i] + '" alt="">' +
+      '<div class="week-card-overlay">' +
+      '<span class="week-card-number">Week ' + w.week + '</span>' +
+      '<span class="week-card-title">' + esc(w.title) + '</span>' +
+      '<span class="week-card-meta">' + total + ' exercises &middot; ' + esc(w.subtitle) + '</span>' +
+      '</div>' + badge + '</button>';
+  });
+  document.getElementById("weeksGrid").innerHTML = html;
+}
+
+function renderWeek(wNum) {
+  var w = PROGRAM[wNum-1];
+  document.getElementById("weekNavTitle").textContent = "Week " + wNum;
+  var html = '<h2 class="section-title">' + esc(w.title) + '</h2>' +
+    '<p class="section-subtitle">' + esc(w.subtitle) + '. Tap any exercise to begin.</p>';
+  w.exercises.forEach(function(e, i) {
+    var done = !!state.done[e.id];
+    html += '<button class="exercise-item' + (done ? ' completed' : '') + '" data-exercise="' + e.id + '">' +
+      '<span class="exercise-num">' + (done ? '&#10003;' : (i+1)) + '</span>' +
+      '<span class="exercise-info">' +
+      '<span class="exercise-name">' + esc(e.name) + '</span>' +
+      '<span class="exercise-duration" style="display:block">' + Math.round(e.duration/60) + ' min</span>' +
+      '</span>' +
+      '<span class="exercise-done-word">Done</span>' +
+      '</button>';
+  });
+  document.getElementById("weekContent").innerHTML = html;
+  show("week");
+}
+
+function photoSlot(ex, letter, caption) {
+  var file = "img/" + ex.id + letter + ".jpg";
+  return '<div class="photo-slot">' +
+    '<img src="' + file + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+    '<div class="photo-placeholder" style="display:none">' +
+    '<span class="pp-label">Photo ' + letter.toUpperCase() + '</span>' +
+    '<span class="pp-file">' + file + '</span>' +
+    '</div>' +
+    '<div class="photo-caption">' + caption + '</div>' +
+    '</div>';
+}
+
+var current = null;
+function openExercise(id, fromScreen) {
+  current = ALL.find(function(e){ return e.id === id; });
+  if (!current) return;
+  current.fromScreen = fromScreen;
+  document.getElementById("exNavTitle").textContent = "Week " + current.week;
+  var helpsHtml = current.helps.map(function(h){ return "<li>" + esc(h) + "</li>"; }).join("");
+  var html =
+    '<div class="detail-weekline">Week ' + current.week + ' &middot; ' + Math.round(current.duration/60) + ' minutes</div>' +
+    '<h2 class="detail-title">' + esc(current.name) + '</h2>' +
+    '<div style="height:20px"></div>' +
+    '<div class="photo-row">' + photoSlot(current, "a", "Start position") + photoSlot(current, "b", "End position") + '</div>' +
+    '<div class="info-card"><h3>What to do</h3><p>' + esc(current.what) + '</p></div>' +
+    '<div class="info-card"><h3>How it helps you</h3><ul>' + helpsHtml + '</ul></div>' +
+    (current.video ? '' : '<p class="video-note">Video for this exercise is coming soon.</p>') +
+    '<div class="timer-wrap">' +
+    '<div class="timer-container">' +
+    '<svg class="timer-svg" viewBox="0 0 260 260">' +
+    '<circle class="timer-track" cx="130" cy="130" r="118"/>' +
+    '<circle class="timer-progress" id="timerProgress" cx="130" cy="130" r="118" stroke-dasharray="741.42" stroke-dashoffset="0"/>' +
+    '</svg>' +
+    '<div class="timer-text"><div class="timer-time" id="timerDisplay">' + fmt(current.duration) + '</div>' +
+    '<div class="timer-label">Remaining</div></div>' +
+    '</div>' +
+    '<div class="timer-controls">' +
+    '<button class="control-btn play" id="btnPlay" data-action="toggle-timer">Start</button>' +
+    '<button class="control-btn" data-action="finish-early">Finish</button>' +
+    '</div>' +
+    '</div>';
+  document.getElementById("exerciseContent").innerHTML = html;
+  resetTimer();
+  show("exercise");
+}
+
+/* ---------- timer ---------- */
+var timer = { interval: null, remaining: 0, running: false };
+var CIRC = 741.42;
+function resetTimer() {
+  clearInterval(timer.interval);
+  timer.remaining = current.duration;
+  timer.running = false;
+  updateTimerUI();
+}
+function updateTimerUI() {
+  var d = document.getElementById("timerDisplay");
+  if (!d) return;
+  d.textContent = fmt(timer.remaining);
+  var frac = current ? timer.remaining / current.duration : 1;
+  document.getElementById("timerProgress").style.strokeDashoffset = String(CIRC * (1 - frac));
+  var btn = document.getElementById("btnPlay");
+  if (btn) btn.textContent = timer.running ? "Pause" : (timer.remaining === current.duration ? "Start" : "Resume");
+}
+function toggleTimer() {
+  if (timer.running) {
+    clearInterval(timer.interval);
+    timer.running = false;
+  } else {
+    timer.running = true;
+    timer.interval = setInterval(function() {
+      timer.remaining--;
+      if (timer.remaining <= 0) { timer.remaining = 0; clearInterval(timer.interval); timer.running = false; completeExercise(); }
+      updateTimerUI();
+    }, 1000);
+  }
+  updateTimerUI();
+}
+
+/* ---------- completion ---------- */
+function completeExercise() {
+  if (!current) return;
+  var firstTime = !state.done[current.id];
+  state.done[current.id] = true;
+  state.totalSessions++;
+  var today = todayStr();
+  if (state.lastDay !== today) {
+    var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    state.streak = (state.lastDay === yesterday.toDateString()) ? state.streak + 1 : 1;
+    state.lastDay = today;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  }
+  save();
+  document.getElementById("feedbackName").textContent = current.name + " complete";
+  document.querySelectorAll(".rating-btn").forEach(function(b){ b.classList.remove("selected"); });
+  document.getElementById("screen-feedback").classList.add("active");
+}
+
+function finishFeedback() {
+  document.getElementById("screen-feedback").classList.remove("active");
+  checkMilestones();
+  var w = current ? current.week : 1;
+  var justFinishedWeek = weekDoneCount(w) === PROGRAM[w-1].exercises.length && !state.celebrated["w" + w];
+  var goBack = function() {
+    if (current && current.fromScreen === "practice") show("practice");
+    else renderWeek(w);
+  };
+  if (justFinishedWeek) {
+    state.celebrated["w" + w] = true;
+    save();
+    document.getElementById("weekdoneMark").textContent = "W" + w;
+    document.getElementById("weekdoneTitle").textContent = "Week " + w + " complete";
+    document.getElementById("weekdoneSub").textContent = w < 6
+      ? "Wonderful work, Barb. Week " + (w+1) + ", " + PROGRAM[w].title + ", is now open for you."
+      : "You finished the whole six-week journey. One day at a time, and you did it.";
+    document.getElementById("screen-weekdone").classList.add("active");
+    document.getElementById("screen-weekdone").dataset.goback = "1";
+  } else {
+    goBack();
+  }
+}
+
+function checkMilestones() {
+  MILESTONES.forEach(function(m) {
+    if (!state.badges[m.id] && m.test(state)) {
+      state.badges[m.id] = new Date().toLocaleDateString();
+      toast("Milestone earned: " + m.name);
+    }
+  });
+  save();
+}
+
+/* ---------- practice + progress ---------- */
+function renderPractice() {
+  var html = "";
+  PROGRAM.forEach(function(w) {
+    w.exercises.forEach(function(e) {
+      html += '<button class="practice-card' + (state.done[e.id] ? ' completed' : '') + '" data-practice="' + e.id + '">' +
+        '<span><span class="pc-week">Week ' + w.week + '</span>' +
+        '<span class="pc-name" style="display:block">' + esc(e.name) + '</span></span>' +
+        '<span class="pc-meta">' + Math.round(e.duration/60) + ' min' + (state.done[e.id] ? ' &middot; done' : '') + '</span>' +
+        '</button>';
+    });
+  });
+  document.getElementById("practiceGrid").innerHTML = html;
+}
+
+function renderProgress() {
+  document.getElementById("pStreak").textContent = state.streak;
+  document.getElementById("pSessions").textContent = state.totalSessions;
+  document.getElementById("pBadges").textContent = Object.keys(state.badges).length;
+
+  var rc = 2 * Math.PI * 33;
+  var rings = "";
+  PROGRAM.forEach(function(w) {
+    var done = weekDoneCount(w.week), total = w.exercises.length;
+    var frac = done / total;
+    rings += '<div class="ring-card' + (frac === 1 ? ' full' : '') + '">' +
+      '<div class="ring-wrap"><svg viewBox="0 0 78 78">' +
+      '<circle class="ring-track" cx="39" cy="39" r="33"/>' +
+      '<circle class="ring-fill" cx="39" cy="39" r="33" stroke-dasharray="' + rc.toFixed(2) + '" stroke-dashoffset="' + (rc * (1 - frac)).toFixed(2) + '"/>' +
+      '</svg><span class="ring-label">' + w.week + '</span></div>' +
+      '<div class="ring-info"><div class="ri-title">' + esc(w.title) + '</div>' +
+      '<div class="ri-count">' + done + ' of ' + total + ' done</div></div>' +
+      '</div>';
+  });
+  document.getElementById("ringGrid").innerHTML = rings;
+
+  var ms = "";
+  MILESTONES.forEach(function(m) {
+    var earned = state.badges[m.id];
+    ms += '<div class="milestone' + (earned ? ' unlocked' : '') + '">' +
+      '<span class="medallion">' + m.label + '</span>' +
+      '<span><span class="milestone-name" style="display:block">' + esc(m.name) + '</span>' +
+      '<span class="milestone-desc">' + esc(m.desc) + '</span></span>' +
+      (earned ? '<span class="milestone-earned">' + earned + '</span>' : '') +
+      '</div>';
+  });
+  document.getElementById("milestoneList").innerHTML = ms;
+}
+
+/* ---------- breathing: in 4, out 6 (about 6 breaths per minute) ---------- */
+var breath = { active: false, timeout: null, countInterval: null };
+function toggleBreath() {
+  var ov = document.getElementById("breathOverlay");
+  breath.active = !breath.active;
+  ov.classList.toggle("active", breath.active);
+  clearTimeout(breath.timeout);
+  clearInterval(breath.countInterval);
+  if (breath.active) {
+    state.breathCount++;
+    save();
+    checkMilestones();
+    breathPhase(true);
+  } else {
+    setBall(0.72, 0.8, 400);
+    document.getElementById("breathWord").textContent = "Ready";
+    document.getElementById("breathCount").textContent = "";
+  }
+}
+function setBall(ballScale, haloScale, ms) {
+  var ball = document.getElementById("breathBall");
+  var halo = document.getElementById("breathHalo");
+  ball.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
+  halo.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
+  ball.style.transform = "scale(" + ballScale + ")";
+  halo.style.transform = "scale(" + haloScale + ")";
+}
+function breathPhase(inhale) {
+  if (!breath.active) return;
+  var ms = inhale ? 4000 : 6000;
+  var counts = inhale ? 4 : 6;
+  document.getElementById("breathWord").textContent = inhale ? "Breathe in" : "Breathe out";
+  setBall(inhale ? 1 : 0.72, inhale ? 1 : 0.8, ms);
+  var n = 1;
+  document.getElementById("breathCount").textContent = "1";
+  clearInterval(breath.countInterval);
+  breath.countInterval = setInterval(function() {
+    n++;
+    if (n > counts) { clearInterval(breath.countInterval); return; }
+    document.getElementById("breathCount").textContent = String(n);
+  }, 1000);
+  breath.timeout = setTimeout(function() { breathPhase(!inhale); }, ms);
+}
+
+/* ---------- video modal (used once links are added) ---------- */
+function openVideo(id) {
+  if (!id) return;
+  document.getElementById("videoFrame").innerHTML =
+    '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '" allow="fullscreen" allowfullscreen></iframe>';
+  document.getElementById("videoModal").classList.add("active");
+}
+function closeVideo() {
+  document.getElementById("videoModal").classList.remove("active");
+  document.getElementById("videoFrame").innerHTML = "";
+}
+
+/* ---------- toast ---------- */
+var toastTimeout = null;
+function toast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(function(){ t.classList.remove("show"); }, 3200);
+}
+
+/* ---------- events ---------- */
+document.body.addEventListener("click", function(ev) {
+  var el = ev.target.closest("[data-action], [data-week], [data-exercise], [data-practice], [data-rating]");
+  if (!el) return;
+
+  if (el.dataset.week) {
+    var wn = parseInt(el.dataset.week, 10);
+    if (weekUnlocked(wn)) renderWeek(wn);
+    else toast("Finish Week " + (wn-1) + " first to open this week");
+    return;
+  }
+  if (el.dataset.exercise) { openExercise(el.dataset.exercise, "week"); return; }
+  if (el.dataset.practice) { openExercise(el.dataset.practice, "practice"); return; }
+  if (el.dataset.rating) {
+    document.querySelectorAll(".rating-btn").forEach(function(b){ b.classList.remove("selected"); });
+    el.classList.add("selected");
+    if (current) { state.ratings[current.id] = el.dataset.rating; save(); }
+    return;
+  }
+
+  switch (el.dataset.action) {
+    case "nav-home": show("home"); break;
+    case "nav-program": show("program"); break;
+    case "nav-practice": show("practice"); break;
+    case "nav-progress": show("progress"); break;
+    case "continue": var cw = currentWeek(); renderWeek(cw); break;
+    case "close-exercise":
+      clearInterval(timer.interval); timer.running = false;
+      if (current && current.fromScreen === "practice") show("practice");
+      else if (current) renderWeek(current.week);
+      else show("program");
+      break;
+    case "toggle-timer": toggleTimer(); break;
+    case "finish-early":
+      clearInterval(timer.interval); timer.running = false;
+      completeExercise();
+      break;
+    case "toggle-breath": toggleBreath(); break;
+    case "finish-feedback": finishFeedback(); break;
+    case "close-weekdone":
+      document.getElementById("screen-weekdone").classList.remove("active");
+      show("program");
+      break;
+    case "close-video": closeVideo(); break;
+  }
+});
+
+renderHome();
+})();
+</script>
 </body>
 </html>

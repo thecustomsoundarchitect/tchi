@@ -1,36 +1,36 @@
-# My Tai Chi
+# Gentle Tai Chi
 
-A 6-week chair-based tai chi trainer designed for a 72 year old. Plain
-HTML, CSS, and JavaScript. No build step, no dependencies. Progress is
-stored on the device in localStorage.
+A six-week tai chi program built for Barb, 72, on her iPad. One HTML
+file, no build step, no dependencies. Progress is saved on the device
+in localStorage.
 
-## How it works
+## What is inside
 
-- One move at a time with a countdown timer. The timer must finish for
-  the move to count that day.
-- A week unlocks only when every move in the previous week is passed.
-- Each completed day grows a watercolor flower in the garden.
-- The day-complete screen offers a one-tap pre-written text message.
-- Every move links to a real, verified YouTube tutorial.
+- 52 exercises across 6 weeks (8, 9, 10, 10, 10, 5).
+- Each exercise: what to do, how it helps, a countdown timer, and two
+  photo slots (start and end position).
+- A week unlocks when every exercise in the week before it is done.
+- Breathing guide: in for 4 counts, out for 6, about six breaths per
+  minute, the pace research supports for older adults.
+- Progress page: streak, total practices, a progress ring per week,
+  and milestone medallions.
+- Free Practice: any exercise, any time, no locks.
 
-## Settings
+## Adding photos
 
-Three constants at the top of `js/program.js`'s companion, `js/app.js`:
+Drop jpg files into `img/` using the exact names in IMAGES_NEEDED.md
+(example: `img/w1-01a.jpg`). The app shows them automatically.
 
-- `PASS_DAYS_REQUIRED`: days a move must be completed before it counts
-  as passed.
-- `FAMILY_PHONES`: comma-separated numbers for the one-tap text.
-- `IMAGE_MODE`: `"thumbnail"` uses the still from each move's video;
-  any other value loads `img/<move-id>.jpg` instead.
+## Adding videos
 
-## Checks
+All 52 video fields are blank for now. VIDEOS_NEEDED.md is the
+checklist. A video goes live by putting its YouTube id in the matching
+exercise's `video` field in index.html.
 
-`tools/verify_videos.sh` verifies every YouTube id in `js/program.js`
-against the oEmbed endpoint and exits nonzero if any link is dead. Run
-it after any change to the program data.
+## Files
 
-## Run locally
-
-Any static server works, for example:
-
-    python3 -m http.server 8642
+- `index.html` - the whole app
+- `img/` - Barb's exercise photos go here
+- `IMAGES_NEEDED.md` - photo checklist (104 files)
+- `VIDEOS_NEEDED.md` - video checklist (52 links)
+- `ASK_LATER.md` - open questions for Tammy
