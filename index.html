@@ -336,44 +336,22 @@
       font-size: 1.15rem; font-weight: 600;
     }
 
-    /* ---------- BREATH ---------- */
-    .breath-overlay {
-      position: fixed; inset: 0; z-index: 145;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(15,20,18,0.97);
-      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-      padding: 30px;
-    }
-    .breath-overlay.active { opacity: 1; pointer-events: auto; }
-    .breath-stage { position: relative; width: 280px; height: 280px; margin-bottom: 44px; }
-    .breath-ball {
-      position: absolute; inset: 60px;
+    /* ---------- BREATH, inside the timer ---------- */
+    .timer-breath-ball {
+      position: absolute; inset: 26px;
       border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, rgba(212,184,150,0.55), rgba(196,164,132,0.15) 70%);
-      border: 1px solid rgba(212,184,150,0.4);
-      transform: scale(0.72);
+      background: radial-gradient(circle at 40% 35%, rgba(212,184,150,0.4), rgba(196,164,132,0.08) 72%);
+      transform: scale(0.7);
+      z-index: 0;
     }
-    .breath-halo {
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      border: 1.5px solid rgba(196,164,132,0.35);
-      transform: scale(0.8);
+    .timer-breath-word {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; color: var(--accent-light);
+      margin-top: 8px; min-height: 1.6em;
     }
-    .breath-word {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif; font-size: 2rem;
-      color: var(--text-primary);
-    }
-    .breath-count {
-      position: absolute; left: 0; right: 0; bottom: -52px;
-      text-align: center;
-      font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
-      color: var(--accent-light);
-    }
-    .breath-instruction {
-      font-size: 1.1rem; color: var(--text-secondary);
-      text-align: center; max-width: 380px; line-height: 1.7; margin-top: 20px;
+    .breath-hint {
+      font-size: 1rem; color: var(--text-secondary);
+      text-align: center; margin-top: 18px;
     }
 
     /* ---------- FEEDBACK ---------- */
@@ -388,13 +366,17 @@
     .center-overlay.active { opacity: 1; pointer-events: auto; }
     .feedback-title { font-size: 2.4rem; margin-bottom: 8px; }
     .feedback-subtitle { color: var(--text-secondary); margin-bottom: 40px; font-size: 1.1rem; }
-    .rating-container { display: flex; gap: 16px; margin-bottom: 40px; }
+    .rating-hint { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 18px; }
+    .rating-container {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 12px; margin-bottom: 32px; max-width: 560px;
+    }
     .rating-btn {
-      min-width: 110px; padding: 20px 18px;
-      border-radius: var(--radius);
+      padding: 16px 22px;
+      border-radius: 100px;
       background: var(--glass); border: 1px solid var(--border);
       color: var(--text-secondary);
-      font-size: 1.05rem; font-weight: 500; font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 500; font-family: 'Inter', sans-serif;
       cursor: pointer; transition: all 0.2s ease;
     }
     .rating-btn:active { transform: scale(0.95); }
@@ -589,7 +571,7 @@
         <div class="hero-stat"><span class="value" id="statDone">0</span><span class="label">Done of 52</span></div>
         <div class="hero-stat"><span class="value" id="statWeek">1</span><span class="label">Your week</span></div>
       </div>
-      <button class="btn-primary" data-action="continue">Start Today's Practice</button>
+      <button class="btn-primary" data-action="continue">The Program</button>
       <button class="btn-secondary" data-action="nav-practice">Free Practice</button>
     </div>
   </div>
@@ -618,7 +600,7 @@
     <div class="top-nav">
       <button class="top-nav-btn" data-action="close-exercise">Back</button>
       <span class="top-nav-title" id="exNavTitle"></span>
-      <button class="top-nav-btn" data-action="toggle-breath">Breathe</button>
+      <div style="width:52px"></div>
     </div>
     <div class="content" id="exerciseContent"></div>
   </div>
@@ -664,26 +646,23 @@
     </div>
   </div>
 
-  <!-- BREATH OVERLAY -->
-  <div id="breathOverlay" class="breath-overlay">
-    <div class="breath-stage">
-      <div class="breath-halo" id="breathHalo"></div>
-      <div class="breath-ball" id="breathBall"></div>
-      <div class="breath-word" id="breathWord">Ready</div>
-      <div class="breath-count" id="breathCount"></div>
-    </div>
-    <p class="breath-instruction">Breathe in gently through your nose for 4 counts.<br>Breathe out slowly for 6 counts.</p>
-    <button class="btn-secondary" data-action="toggle-breath" style="max-width: 240px;">Close</button>
-  </div>
-
   <!-- FEEDBACK -->
   <div id="screen-feedback" class="center-overlay">
     <h2 class="feedback-title">Well done, Barb</h2>
     <p class="feedback-subtitle" id="feedbackName"></p>
+    <p class="rating-hint">Tap everything that fits. As many as you like.</p>
     <div class="rating-container">
-      <button class="rating-btn" data-rating="hard">Hard</button>
-      <button class="rating-btn" data-rating="okay">Okay</button>
-      <button class="rating-btn" data-rating="good">Good</button>
+      <button class="rating-btn" data-rating="1">Felt good</button>
+      <button class="rating-btn" data-rating="2">Just right</button>
+      <button class="rating-btn" data-rating="3">Too easy</button>
+      <button class="rating-btn" data-rating="4">A bit hard</button>
+      <button class="rating-btn" data-rating="5">Too hard</button>
+      <button class="rating-btn" data-rating="6">Loosened me up</button>
+      <button class="rating-btn" data-rating="7">Relaxing</button>
+      <button class="rating-btn" data-rating="8">Tiring</button>
+      <button class="rating-btn" data-rating="9">Made me wobbly</button>
+      <button class="rating-btn" data-rating="10">Hurt a little</button>
+      <button class="rating-btn" data-rating="11">A favourite</button>
     </div>
     <textarea class="feedback-textarea" id="feedbackNote" rows="3" placeholder="Anything you want to say about this one? (optional)"></textarea>
     <button class="btn-primary" data-action="finish-feedback" style="max-width: 320px;">Continue</button>
@@ -918,7 +897,7 @@ var MILESTONES = [
   { id: "week6",   label: "W6", name: "Integration",     desc: "Finish every Week 6 practice",      test: function(s){ return weekDoneCount(6) === PROGRAM[5].exercises.length; } },
   { id: "half",    label: "26", name: "Halfway There",   desc: "Complete 26 of the 52 exercises",   test: function(s){ return totalDone() >= 26; } },
   { id: "all52",   label: "52", name: "The Whole Journey", desc: "Complete all 52 exercises",       test: function(s){ return totalDone() >= 52; } },
-  { id: "breath5", label: "B",  name: "Calm Breather",   desc: "Use the breathing guide 5 times",   test: function(s){ return s.breathCount >= 5; } }
+  { id: "ten",     label: "10", name: "Ten Practices",   desc: "Complete ten practice sessions",    test: function(s){ return s.totalSessions >= 10; } }
 ];
 
 /* ---------- state ---------- */
@@ -928,7 +907,6 @@ var state = {
   streak: 0,
   bestStreak: 0,
   lastDay: "",
-  breathCount: 0,
   badges: {},
   celebrated: {},
   ratings: {},
@@ -1051,17 +1029,20 @@ function openExercise(id, fromScreen) {
     (current.video ? '' : '<p class="video-note">Video for this exercise is coming soon.</p>') +
     '<div class="timer-wrap">' +
     '<div class="timer-container">' +
+    '<div class="timer-breath-ball" id="breathBall"></div>' +
     '<svg class="timer-svg" viewBox="0 0 260 260">' +
     '<circle class="timer-track" cx="130" cy="130" r="118"/>' +
     '<circle class="timer-progress" id="timerProgress" cx="130" cy="130" r="118" stroke-dasharray="741.42" stroke-dashoffset="0"/>' +
     '</svg>' +
     '<div class="timer-text"><div class="timer-time" id="timerDisplay">' + fmt(current.duration) + '</div>' +
-    '<div class="timer-label">Remaining</div></div>' +
+    '<div class="timer-breath-word" id="breathWord"></div></div>' +
     '</div>' +
     '<div class="timer-controls">' +
     '<button class="control-btn play" id="btnPlay" data-action="toggle-timer">Start</button>' +
+    '<button class="control-btn" data-action="reset-timer">Start Over</button>' +
     '<button class="control-btn" data-action="finish-early">Finish</button>' +
     '</div>' +
+    '<p class="breath-hint">Breathe with the circle: in for 4, out for 6.</p>' +
     '</div>';
   document.getElementById("exerciseContent").innerHTML = html;
   resetTimer();
@@ -1075,6 +1056,7 @@ function resetTimer() {
   clearInterval(timer.interval);
   timer.remaining = current.duration;
   timer.running = false;
+  breathStop(true);
   updateTimerUI();
 }
 function updateTimerUI() {
@@ -1090,11 +1072,13 @@ function toggleTimer() {
   if (timer.running) {
     clearInterval(timer.interval);
     timer.running = false;
+    breathStop(false);
   } else {
     timer.running = true;
+    breathStart();
     timer.interval = setInterval(function() {
       timer.remaining--;
-      if (timer.remaining <= 0) { timer.remaining = 0; clearInterval(timer.interval); timer.running = false; completeExercise(); }
+      if (timer.remaining <= 0) { timer.remaining = 0; clearInterval(timer.interval); timer.running = false; breathStop(true); completeExercise(); }
       updateTimerUI();
     }, 1000);
   }
@@ -1123,13 +1107,14 @@ function completeExercise() {
 }
 
 function finishFeedback() {
-  var sel = document.querySelector(".rating-btn.selected");
+  var picked = Array.prototype.map.call(document.querySelectorAll(".rating-btn.selected"), function(b){ return b.textContent; });
   var note = document.getElementById("feedbackNote").value.trim();
-  if (current && (sel || note)) {
+  if (current && (picked.length || note)) {
+    state.ratings[current.id] = picked;
     state.log.push({
       when: new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" }),
       name: current.name,
-      rating: sel ? sel.textContent : "",
+      rating: picked.join(", "),
       note: note
     });
     save();
@@ -1269,47 +1254,36 @@ function downloadFeedback() {
   URL.revokeObjectURL(a.href);
 }
 
-/* ---------- breathing: in 4, out 6 (about 6 breaths per minute) ---------- */
-var breath = { active: false, timeout: null, countInterval: null };
-function toggleBreath() {
-  var ov = document.getElementById("breathOverlay");
-  breath.active = !breath.active;
-  ov.classList.toggle("active", breath.active);
-  clearTimeout(breath.timeout);
-  clearInterval(breath.countInterval);
-  if (breath.active) {
-    state.breathCount++;
-    save();
-    checkMilestones();
-    breathPhase(true);
-  } else {
-    setBall(0.72, 0.8, 400);
-    document.getElementById("breathWord").textContent = "Ready";
-    document.getElementById("breathCount").textContent = "";
-  }
+/* ---------- breathing, built into the exercise timer ----------
+   Runs only while the timer runs. In 4 seconds, out 6 seconds,
+   about six breaths per minute, the pace research supports for
+   older adults. */
+var breath = { running: false, timeout: null };
+function breathStart() {
+  if (breath.running) return;
+  breath.running = true;
+  breathPhase(true);
 }
-function setBall(ballScale, haloScale, ms) {
+function breathStop(resetVisual) {
+  breath.running = false;
+  clearTimeout(breath.timeout);
   var ball = document.getElementById("breathBall");
-  var halo = document.getElementById("breathHalo");
-  ball.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
-  halo.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
-  ball.style.transform = "scale(" + ballScale + ")";
-  halo.style.transform = "scale(" + haloScale + ")";
+  var word = document.getElementById("breathWord");
+  if (resetVisual && ball) {
+    ball.style.transition = "transform 400ms ease";
+    ball.style.transform = "scale(0.7)";
+  }
+  if (resetVisual && word) word.textContent = "";
 }
 function breathPhase(inhale) {
-  if (!breath.active) return;
+  if (!breath.running) return;
+  var ball = document.getElementById("breathBall");
+  var word = document.getElementById("breathWord");
+  if (!ball || !word) { breath.running = false; return; }
   var ms = inhale ? 4000 : 6000;
-  var counts = inhale ? 4 : 6;
-  document.getElementById("breathWord").textContent = inhale ? "Breathe in" : "Breathe out";
-  setBall(inhale ? 1 : 0.72, inhale ? 1 : 0.8, ms);
-  var n = 1;
-  document.getElementById("breathCount").textContent = "1";
-  clearInterval(breath.countInterval);
-  breath.countInterval = setInterval(function() {
-    n++;
-    if (n > counts) { clearInterval(breath.countInterval); return; }
-    document.getElementById("breathCount").textContent = String(n);
-  }, 1000);
+  word.textContent = inhale ? "Breathe in" : "Breathe out";
+  ball.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
+  ball.style.transform = "scale(" + (inhale ? 1 : 0.7) + ")";
   breath.timeout = setTimeout(function() { breathPhase(!inhale); }, ms);
 }
 
@@ -1347,9 +1321,7 @@ document.body.addEventListener("click", function(ev) {
   if (el.dataset.exercise) { openExercise(el.dataset.exercise, "week"); return; }
   if (el.dataset.practice) { openExercise(el.dataset.practice, "practice"); return; }
   if (el.dataset.rating) {
-    document.querySelectorAll(".rating-btn").forEach(function(b){ b.classList.remove("selected"); });
-    el.classList.add("selected");
-    if (current) { state.ratings[current.id] = el.dataset.rating; save(); }
+    el.classList.toggle("selected");
     return;
   }
 
@@ -1358,19 +1330,19 @@ document.body.addEventListener("click", function(ev) {
     case "nav-program": show("program"); break;
     case "nav-practice": show("practice"); break;
     case "nav-progress": show("progress"); break;
-    case "continue": var cw = currentWeek(); renderWeek(cw); break;
+    case "continue": show("program"); break;
     case "close-exercise":
-      clearInterval(timer.interval); timer.running = false;
+      clearInterval(timer.interval); timer.running = false; breathStop(false);
       if (current && current.fromScreen === "practice") show("practice");
       else if (current) renderWeek(current.week);
       else show("program");
       break;
     case "toggle-timer": toggleTimer(); break;
+    case "reset-timer": resetTimer(); toast("Timer reset. Take your time."); break;
     case "finish-early":
-      clearInterval(timer.interval); timer.running = false;
+      clearInterval(timer.interval); timer.running = false; breathStop(true);
       completeExercise();
       break;
-    case "toggle-breath": toggleBreath(); break;
     case "finish-feedback": finishFeedback(); break;
     case "close-weekdone":
       document.getElementById("screen-weekdone").classList.remove("active");
