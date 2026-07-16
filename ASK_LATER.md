@@ -18,3 +18,27 @@ Questions waiting for Tammy. Answer by number, any time.
 
 5. Photo format. The app expects jpg. iPhone photos are often HEIC and
    would need converting first. Want a converter script in tools?
+
+Added 2026-07-15, after the rebuild to a 3x-a-week program. Defaults
+I picked so the build could finish. Change any by number.
+
+6. Home screen "Your week" number now points at the first week that
+   does not have 3 workouts yet. Fine, or should it show the week
+   Barb used most recently?
+
+7. Home screen middle stat now says "Workouts" (total workouts done).
+   It used to say "Done of 52", which no longer means anything.
+
+8. Between moves in a workout, Barb taps "Next Move" herself. No
+   auto-advance, she sets the pace. The button also works before the
+   timer ends, so she can move on early if a move is not for her.
+
+9. The "how did it feel" screen now appears once per workout, at the
+   end, instead of after every single move.
+
+10. Leaving a workout partway does not count it. No partial credit.
+    Should it remember where she was and offer to continue?
+
+11. The dots on a week's page track the current calendar week, Monday
+    to Sunday. If she does the workout fewer than 3 times, nothing
+    scolds her; the count just starts fresh the next week.

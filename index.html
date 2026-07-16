@@ -542,6 +542,42 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ---------- WEEKLY GOAL CARD ---------- */
+    .goal-card {
+      background: var(--glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 26px; margin-bottom: 20px;
+    }
+    .goal-kicker {
+      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent-light); margin-bottom: 6px;
+    }
+    .goal-line { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; }
+    .day-dots { display: flex; gap: 8px; margin: 22px 0 4px; }
+    .dot { flex: 1; text-align: center; }
+    .dot-circle {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--glass-light);
+      margin: 0 auto 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--bg);
+    }
+    .dot.filled .dot-circle { background: var(--sage); border-color: var(--sage); }
+    .dot.today .dot-circle { border: 2px solid var(--accent); }
+    .dot-label {
+      font-size: 0.68rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; display: block;
+    }
+    .goal-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; color: var(--accent-light); margin-top: 14px;
+    }
+    .moves-heading { font-size: 1.7rem; margin: 34px 0 16px; }
+    .session-progress {
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent-light); margin-bottom: 6px;
+    }
+
     /* ---------- iPad landscape and larger ---------- */
     @media (min-width: 900px) {
       .weeks-grid { grid-template-columns: 1fr 1fr; }
@@ -568,7 +604,7 @@
       <p class="quote">"One day at a time."</p>
       <div class="hero-stats">
         <div class="hero-stat"><span class="value" id="statStreak">0</span><span class="label">Day streak</span></div>
-        <div class="hero-stat"><span class="value" id="statDone">0</span><span class="label">Done of 52</span></div>
+        <div class="hero-stat"><span class="value" id="statDone">0</span><span class="label">Workouts</span></div>
         <div class="hero-stat"><span class="value" id="statWeek">1</span><span class="label">Your week</span></div>
       </div>
       <button class="btn-primary" data-action="continue">The Program</button>
@@ -605,6 +641,16 @@
     <div class="content" id="exerciseContent"></div>
   </div>
 
+  <!-- WORKOUT SESSION -->
+  <div id="screen-session" class="screen">
+    <div class="top-nav">
+      <button class="top-nav-btn" data-action="close-session">Leave</button>
+      <span class="top-nav-title" id="sNavTitle"></span>
+      <div style="width:52px"></div>
+    </div>
+    <div class="content" id="sessionContent"></div>
+  </div>
+
   <!-- PRACTICE -->
   <div id="screen-practice" class="screen">
     <div class="content">
@@ -622,7 +668,7 @@
       <div class="summary-card">
         <div class="summary-stat"><span class="value" id="pStreak">0</span><span class="label">Day streak</span></div>
         <div class="summary-divider"></div>
-        <div class="summary-stat"><span class="value" id="pSessions">0</span><span class="label">Practices</span></div>
+        <div class="summary-stat"><span class="value" id="pSessions">0</span><span class="label">Workouts</span></div>
         <div class="summary-divider"></div>
         <div class="summary-stat"><span class="value" id="pBadges">0</span><span class="label">Milestones</span></div>
       </div>
@@ -885,49 +931,45 @@ var PROGRAM = [
 var ALL = [];
 PROGRAM.forEach(function(w) { w.exercises.forEach(function(e) { e.week = w.week; ALL.push(e); }); });
 
+var GOAL = 3; /* workouts per week */
+
 var MILESTONES = [
-  { id: "first",   label: "1",  name: "First Practice",  desc: "Complete your very first exercise", test: function(s){ return s.totalSessions >= 1; } },
-  { id: "streak3", label: "3",  name: "Three Days",      desc: "Practice three days in a row",      test: function(s){ return s.bestStreak >= 3; } },
-  { id: "streak7", label: "7",  name: "One Full Week",   desc: "Practice seven days in a row",      test: function(s){ return s.bestStreak >= 7; } },
-  { id: "week1",   label: "W1", name: "Foundation",      desc: "Finish every Week 1 exercise",      test: function(s){ return weekDoneCount(1) === PROGRAM[0].exercises.length; } },
-  { id: "week2",   label: "W2", name: "Flowing",         desc: "Finish every Week 2 exercise",      test: function(s){ return weekDoneCount(2) === PROGRAM[1].exercises.length; } },
-  { id: "week3",   label: "W3", name: "Strong & Steady", desc: "Finish every Week 3 exercise",      test: function(s){ return weekDoneCount(3) === PROGRAM[2].exercises.length; } },
-  { id: "week4",   label: "W4", name: "In the Flow",     desc: "Finish every Week 4 exercise",      test: function(s){ return weekDoneCount(4) === PROGRAM[3].exercises.length; } },
-  { id: "week5",   label: "W5", name: "Rock Solid",      desc: "Finish every Week 5 exercise",      test: function(s){ return weekDoneCount(5) === PROGRAM[4].exercises.length; } },
-  { id: "week6",   label: "W6", name: "Integration",     desc: "Finish every Week 6 practice",      test: function(s){ return weekDoneCount(6) === PROGRAM[5].exercises.length; } },
-  { id: "half",    label: "26", name: "Halfway There",   desc: "Complete 26 of the 52 exercises",   test: function(s){ return totalDone() >= 26; } },
-  { id: "all52",   label: "52", name: "The Whole Journey", desc: "Complete all 52 exercises",       test: function(s){ return totalDone() >= 52; } },
-  { id: "ten",     label: "10", name: "Ten Practices",   desc: "Complete ten practice sessions",    test: function(s){ return s.totalSessions >= 10; } }
+  { id: "first",   label: "1",  name: "First Workout",   desc: "Complete your first full workout",     test: function(){ return state.sessions.length >= 1; } },
+  { id: "streak3", label: "3",  name: "Three Days",      desc: "Practice three days in a row",         test: function(){ return state.bestStreak >= 3; } },
+  { id: "streak7", label: "7",  name: "One Full Week",   desc: "Practice seven days in a row",         test: function(){ return state.bestStreak >= 7; } },
+  { id: "week1",   label: "W1", name: "Foundation",      desc: "Do the Week 1 workout 3 times",        test: function(){ return weekSessionCount(1) >= GOAL; } },
+  { id: "week2",   label: "W2", name: "Flowing",         desc: "Do the Week 2 workout 3 times",        test: function(){ return weekSessionCount(2) >= GOAL; } },
+  { id: "week3",   label: "W3", name: "Strong & Steady", desc: "Do the Week 3 workout 3 times",        test: function(){ return weekSessionCount(3) >= GOAL; } },
+  { id: "week4",   label: "W4", name: "In the Flow",     desc: "Do the Week 4 workout 3 times",        test: function(){ return weekSessionCount(4) >= GOAL; } },
+  { id: "week5",   label: "W5", name: "Rock Solid",      desc: "Do the Week 5 workout 3 times",        test: function(){ return weekSessionCount(5) >= GOAL; } },
+  { id: "week6",   label: "W6", name: "Integration",     desc: "Do the Week 6 workout 3 times",        test: function(){ return weekSessionCount(6) >= GOAL; } },
+  { id: "ten",     label: "10", name: "Ten Workouts",    desc: "Complete ten full workouts",           test: function(){ return state.sessions.length >= 10; } },
+  { id: "all",     label: "6",  name: "The Whole Journey", desc: "Complete all six weeks",             test: function(){ for (var i = 1; i <= 6; i++) { if (weekSessionCount(i) < GOAL) return false; } return true; } }
 ];
 
 /* ---------- state ---------- */
 var state = {
-  done: {},            /* exercise id -> true */
-  totalSessions: 0,
+  sessions: [],        /* {date: "YYYY-MM-DD", week: 1..6} */
   streak: 0,
   bestStreak: 0,
   lastDay: "",
   badges: {},
   celebrated: {},
-  ratings: {},
   days: {},
   log: []
 };
 try {
   var saved = localStorage.getItem("gentleTaiChiBarb");
-  if (saved) { var s = JSON.parse(saved); Object.keys(state).forEach(function(k){ if (s[k] !== undefined) state[k] = s[k]; }); }
+  if (saved) {
+    var s = JSON.parse(saved);
+    Object.keys(state).forEach(function(k){ if (s[k] !== undefined) state[k] = s[k]; });
+    /* older saves tracked single exercises, not workouts; their celebrations do not apply */
+    if (state.sessions.length === 0) state.celebrated = {};
+  }
 } catch (e) {}
 
 function save() { try { localStorage.setItem("gentleTaiChiBarb", JSON.stringify(state)); } catch (e) {} }
 function todayStr() { return new Date().toDateString(); }
-function weekDoneCount(w) {
-  return PROGRAM[w-1].exercises.filter(function(e){ return state.done[e.id]; }).length;
-}
-function totalDone() { return ALL.filter(function(e){ return state.done[e.id]; }).length; }
-function currentWeek() {
-  for (var i = 1; i <= 6; i++) { if (weekDoneCount(i) < PROGRAM[i-1].exercises.length) return i; }
-  return 6;
-}
 function dayKey(d) {
   return d.getFullYear() + "-" + (d.getMonth()+1 < 10 ? "0" : "") + (d.getMonth()+1) + "-" + (d.getDate() < 10 ? "0" : "") + d.getDate();
 }
@@ -937,13 +979,61 @@ function fmt(sec) {
 }
 function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
+function weekSessionCount(w) {
+  return state.sessions.filter(function(s){ return s.week === w; }).length;
+}
+function weekComplete(w) { return weekSessionCount(w) >= GOAL; }
+function currentWeek() {
+  for (var i = 1; i <= 6; i++) { if (!weekComplete(i)) return i; }
+  return 6;
+}
+function weekMinutes(w) {
+  var total = 0;
+  PROGRAM[w-1].exercises.forEach(function(e){ total += e.duration; });
+  return Math.round(total / 60);
+}
+/* the 7 day-keys of the current calendar week, Monday first */
+function calendarWeekKeys() {
+  var now = new Date();
+  var mon = new Date(now);
+  mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  var keys = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    keys.push(dayKey(d));
+  }
+  return keys;
+}
+function sessionOnDate(w, key) {
+  return state.sessions.filter(function(s){ return s.week === w && s.date === key; }).length > 0;
+}
+function sessionsThisCalendarWeek(w) {
+  var keys = calendarWeekKeys();
+  return state.sessions.filter(function(s){ return s.week === w && keys.indexOf(s.date) !== -1; }).length;
+}
+
+/* any completed activity marks the day and feeds the streak */
+function markActivity() {
+  var dk = dayKey(new Date());
+  state.days[dk] = (state.days[dk] || 0) + 1;
+  var today = todayStr();
+  if (state.lastDay !== today) {
+    var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    state.streak = (state.lastDay === yesterday.toDateString()) ? state.streak + 1 : 1;
+    state.lastDay = today;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  }
+  save();
+}
+
 /* ---------- navigation ---------- */
-var screens = ["home", "program", "week", "exercise", "practice", "progress"];
+var screens = ["home", "program", "week", "exercise", "session", "practice", "progress"];
 function show(name) {
   screens.forEach(function(s) {
     document.getElementById("screen-" + s).classList.toggle("active", s === name);
   });
-  var navMap = { home: "nav-home", program: "nav-program", week: "nav-program", exercise: null, practice: "nav-practice", progress: "nav-progress" };
+  var navMap = { home: "nav-home", program: "nav-program", week: "nav-program", exercise: null, session: null, practice: "nav-practice", progress: "nav-progress" };
   document.querySelectorAll(".nav-item").forEach(function(b) {
     b.classList.toggle("active", b.getAttribute("data-action") === navMap[name]);
   });
@@ -957,43 +1047,63 @@ function show(name) {
 /* ---------- renders ---------- */
 function renderHome() {
   document.getElementById("statStreak").textContent = state.streak;
-  document.getElementById("statDone").textContent = totalDone();
+  document.getElementById("statDone").textContent = state.sessions.length;
   document.getElementById("statWeek").textContent = currentWeek();
 }
 
 function renderProgram() {
   var html = "";
   PROGRAM.forEach(function(w, i) {
-    var done = weekDoneCount(w.week);
-    var total = w.exercises.length;
-    var badge = done === total ? '<span class="week-card-badge done">Complete</span>'
-      : done > 0 ? '<span class="week-card-badge">' + done + ' of ' + total + '</span>'
+    var n = weekSessionCount(w.week);
+    var badge = n >= GOAL ? '<span class="week-card-badge done">Complete</span>'
+      : n > 0 ? '<span class="week-card-badge">' + n + ' of ' + GOAL + '</span>'
       : '<span class="week-card-badge">Ready</span>';
     html += '<button class="week-card" data-week="' + w.week + '">' +
       '<img src="' + WEEK_IMAGES[i] + '" alt="">' +
       '<div class="week-card-overlay">' +
       '<span class="week-card-number">Week ' + w.week + '</span>' +
       '<span class="week-card-title">' + esc(w.title) + '</span>' +
-      '<span class="week-card-meta">' + total + ' exercises &middot; ' + esc(w.subtitle) + '</span>' +
+      '<span class="week-card-meta">' + w.exercises.length + ' moves &middot; about ' + weekMinutes(w.week) + ' min</span>' +
       '</div>' + badge + '</button>';
   });
   document.getElementById("weeksGrid").innerHTML = html;
 }
 
+var viewedWeek = 1;
 function renderWeek(wNum) {
+  viewedWeek = wNum;
   var w = PROGRAM[wNum-1];
   document.getElementById("weekNavTitle").textContent = "Week " + wNum;
+
+  var keys = calendarWeekKeys();
+  var todayK = dayKey(new Date());
+  var labels = ["M", "T", "W", "T", "F", "S", "S"];
+  var dots = "";
+  for (var i = 0; i < 7; i++) {
+    var did = sessionOnDate(wNum, keys[i]);
+    dots += '<span class="dot' + (did ? ' filled' : '') + (keys[i] === todayK ? ' today' : '') + '">' +
+      '<span class="dot-circle">' + (did ? '&#10003;' : '') + '</span>' +
+      '<span class="dot-label">' + labels[i] + '</span></span>';
+  }
+  var doneThisWeek = sessionsThisCalendarWeek(wNum);
+
   var html = '<h2 class="section-title">' + esc(w.title) + '</h2>' +
-    '<p class="section-subtitle">' + esc(w.subtitle) + '. Tap any exercise to begin.</p>';
+    '<p class="section-subtitle">' + esc(w.subtitle) + '</p>' +
+    '<div class="goal-card">' +
+    '<div class="goal-kicker">This week&rsquo;s goal</div>' +
+    '<div class="goal-line">Do this workout ' + GOAL + ' times this week. ' + w.exercises.length + ' moves, about ' + weekMinutes(wNum) + ' minutes. More is always welcome.</div>' +
+    '<div class="day-dots">' + dots + '</div>' +
+    '<div class="goal-count">' + doneThisWeek + ' of ' + GOAL + ' done this week</div>' +
+    '</div>' +
+    '<button class="btn-primary" data-action="start-session">Start Workout</button>' +
+    '<h3 class="moves-heading serif">The moves this week</h3>';
   w.exercises.forEach(function(e, i) {
-    var done = !!state.done[e.id];
-    html += '<button class="exercise-item' + (done ? ' completed' : '') + '" data-exercise="' + e.id + '">' +
-      '<span class="exercise-num">' + (done ? '&#10003;' : (i+1)) + '</span>' +
+    html += '<button class="exercise-item" data-exercise="' + e.id + '">' +
+      '<span class="exercise-num">' + (i+1) + '</span>' +
       '<span class="exercise-info">' +
       '<span class="exercise-name">' + esc(e.name) + '</span>' +
-      '<span class="exercise-duration" style="display:block">' + Math.round(e.duration/60) + ' min</span>' +
+      '<span class="exercise-duration" style="display:block">' + Math.round(e.duration/60) + ' min &middot; tap to have a look</span>' +
       '</span>' +
-      '<span class="exercise-done-word">Done</span>' +
       '</button>';
   });
   document.getElementById("weekContent").innerHTML = html;
@@ -1012,13 +1122,114 @@ function photoSlot(ex, letter, caption) {
     '</div>';
 }
 
+/* ---------- shared timer with breathing ---------- */
+var CIRC = 741.42;
+function makeTimer(cfg) {
+  return { cfg: cfg, duration: 0, remaining: 0, running: false, interval: null, breathing: false, breathTimeout: null };
+}
+function tEl(t, key) { return document.getElementById(t.cfg[key]); }
+function timerHTML(t, duration, controls) {
+  return '<div class="timer-wrap">' +
+    '<div class="timer-container">' +
+    '<div class="timer-breath-ball" id="' + t.cfg.ball + '"></div>' +
+    '<svg class="timer-svg" viewBox="0 0 260 260">' +
+    '<circle class="timer-track" cx="130" cy="130" r="118"/>' +
+    '<circle class="timer-progress" id="' + t.cfg.progress + '" cx="130" cy="130" r="118" stroke-dasharray="741.42" stroke-dashoffset="0"/>' +
+    '</svg>' +
+    '<div class="timer-text"><div class="timer-time" id="' + t.cfg.display + '">' + fmt(duration) + '</div>' +
+    '<div class="timer-breath-word" id="' + t.cfg.word + '"></div></div>' +
+    '</div>' +
+    '<div class="timer-controls">' + controls + '</div>' +
+    '<p class="breath-hint">Breathe with the circle: in for 4, out for 6.</p>' +
+    '</div>';
+}
+function timerReset(t, dur) {
+  clearInterval(t.interval);
+  if (dur !== undefined) t.duration = dur;
+  t.remaining = t.duration;
+  t.running = false;
+  breathStop(t, true);
+  timerUpdate(t);
+}
+function timerStop(t) {
+  clearInterval(t.interval);
+  t.running = false;
+  breathStop(t, false);
+}
+function timerUpdate(t) {
+  var d = tEl(t, "display");
+  if (!d) return;
+  d.textContent = fmt(t.remaining);
+  var frac = t.duration ? t.remaining / t.duration : 1;
+  var p = tEl(t, "progress");
+  if (p) p.style.strokeDashoffset = String(CIRC * (1 - frac));
+  var btn = tEl(t, "play");
+  if (btn) btn.textContent = t.running ? "Pause" : (t.remaining === t.duration ? "Start" : "Resume");
+}
+function timerToggle(t) {
+  if (t.running) {
+    clearInterval(t.interval);
+    t.running = false;
+    breathStop(t, false);
+  } else if (t.remaining > 0) {
+    t.running = true;
+    breathStart(t);
+    t.interval = setInterval(function() {
+      t.remaining--;
+      if (t.remaining <= 0) {
+        t.remaining = 0;
+        clearInterval(t.interval);
+        t.running = false;
+        breathStop(t, true);
+        if (t.cfg.onDone) t.cfg.onDone();
+      }
+      timerUpdate(t);
+    }, 1000);
+  }
+  timerUpdate(t);
+}
+function breathStart(t) {
+  if (t.breathing) return;
+  t.breathing = true;
+  breathPhase(t, true);
+}
+function breathStop(t, resetVisual) {
+  t.breathing = false;
+  clearTimeout(t.breathTimeout);
+  var ball = tEl(t, "ball"), word = tEl(t, "word");
+  if (resetVisual && ball) {
+    ball.style.transition = "transform 400ms ease";
+    ball.style.transform = "scale(0.7)";
+  }
+  if (resetVisual && word) word.textContent = "";
+}
+function breathPhase(t, inhale) {
+  if (!t.breathing) return;
+  var ball = tEl(t, "ball"), word = tEl(t, "word");
+  if (!ball || !word) { t.breathing = false; return; }
+  var ms = inhale ? 4000 : 6000;
+  word.textContent = inhale ? "Breathe in" : "Breathe out";
+  ball.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
+  ball.style.transform = "scale(" + (inhale ? 1 : 0.7) + ")";
+  t.breathTimeout = setTimeout(function() { breathPhase(t, !inhale); }, ms);
+}
+
+/* ---------- looking at a single move (does not count toward the goal) ---------- */
+var previewTimer = makeTimer({
+  display: "timerDisplay", progress: "timerProgress", play: "btnPlay",
+  ball: "breathBall", word: "breathWord",
+  onDone: function() { markActivity(); toast("Lovely work, Barb."); }
+});
 var current = null;
 function openExercise(id, fromScreen) {
   current = ALL.find(function(e){ return e.id === id; });
   if (!current) return;
   current.fromScreen = fromScreen;
-  document.getElementById("exNavTitle").textContent = "Week " + current.week;
+  document.getElementById("exNavTitle").textContent = "Week " + current.week + " move";
   var helpsHtml = current.helps.map(function(h){ return "<li>" + esc(h) + "</li>"; }).join("");
+  var controls =
+    '<button class="control-btn play" id="btnPlay" data-action="toggle-timer">Start</button>' +
+    '<button class="control-btn" data-action="reset-timer">Start Over</button>';
   var html =
     '<div class="detail-weekline">Week ' + current.week + ' &middot; ' + Math.round(current.duration/60) + ' minutes</div>' +
     '<h2 class="detail-title">' + esc(current.name) + '</h2>' +
@@ -1026,81 +1237,64 @@ function openExercise(id, fromScreen) {
     '<div class="photo-row">' + photoSlot(current, "a", "Start position") + photoSlot(current, "b", "End position") + '</div>' +
     '<div class="info-card"><h3>What to do</h3><p>' + esc(current.what) + '</p></div>' +
     '<div class="info-card"><h3>How it helps you</h3><ul>' + helpsHtml + '</ul></div>' +
-    (current.video ? '' : '<p class="video-note">Video for this exercise is coming soon.</p>') +
-    '<div class="timer-wrap">' +
-    '<div class="timer-container">' +
-    '<div class="timer-breath-ball" id="breathBall"></div>' +
-    '<svg class="timer-svg" viewBox="0 0 260 260">' +
-    '<circle class="timer-track" cx="130" cy="130" r="118"/>' +
-    '<circle class="timer-progress" id="timerProgress" cx="130" cy="130" r="118" stroke-dasharray="741.42" stroke-dashoffset="0"/>' +
-    '</svg>' +
-    '<div class="timer-text"><div class="timer-time" id="timerDisplay">' + fmt(current.duration) + '</div>' +
-    '<div class="timer-breath-word" id="breathWord"></div></div>' +
-    '</div>' +
-    '<div class="timer-controls">' +
-    '<button class="control-btn play" id="btnPlay" data-action="toggle-timer">Start</button>' +
-    '<button class="control-btn" data-action="reset-timer">Start Over</button>' +
-    '<button class="control-btn" data-action="finish-early">Finish</button>' +
-    '</div>' +
-    '<p class="breath-hint">Breathe with the circle: in for 4, out for 6.</p>' +
-    '</div>';
+    (current.video ? '' : '<p class="video-note">Video for this move is coming soon.</p>') +
+    timerHTML(previewTimer, current.duration, controls);
   document.getElementById("exerciseContent").innerHTML = html;
-  resetTimer();
+  timerReset(previewTimer, current.duration);
   show("exercise");
 }
 
-/* ---------- timer ---------- */
-var timer = { interval: null, remaining: 0, running: false };
-var CIRC = 741.42;
-function resetTimer() {
-  clearInterval(timer.interval);
-  timer.remaining = current.duration;
-  timer.running = false;
-  breathStop(true);
-  updateTimerUI();
+/* ---------- the guided workout ---------- */
+var session = { week: 1, idx: 0 };
+var sessionTimer = makeTimer({
+  display: "sTimerDisplay", progress: "sTimerProgress", play: "sBtnPlay",
+  ball: "sBreathBall", word: "sBreathWord",
+  onDone: function() {
+    var last = session.idx === PROGRAM[session.week-1].exercises.length - 1;
+    toast(last ? "Beautiful. Tap Finish when you are ready." : "Move done. Tap Next Move when ready.");
+  }
+});
+function startSession(w) {
+  session.week = w;
+  session.idx = 0;
+  renderSessionStep();
+  show("session");
 }
-function updateTimerUI() {
-  var d = document.getElementById("timerDisplay");
-  if (!d) return;
-  d.textContent = fmt(timer.remaining);
-  var frac = current ? timer.remaining / current.duration : 1;
-  document.getElementById("timerProgress").style.strokeDashoffset = String(CIRC * (1 - frac));
-  var btn = document.getElementById("btnPlay");
-  if (btn) btn.textContent = timer.running ? "Pause" : (timer.remaining === current.duration ? "Start" : "Resume");
+function renderSessionStep() {
+  var w = PROGRAM[session.week-1];
+  var ex = w.exercises[session.idx];
+  var n = w.exercises.length;
+  var last = session.idx === n - 1;
+  document.getElementById("sNavTitle").textContent = "Week " + session.week + " workout";
+  var controls =
+    '<button class="control-btn play" id="sBtnPlay" data-action="s-toggle">Start</button>' +
+    '<button class="control-btn" data-action="s-next">' + (last ? 'Finish' : 'Next Move') + '</button>';
+  var html =
+    '<div class="session-progress">Move ' + (session.idx + 1) + ' of ' + n + '</div>' +
+    '<h2 class="detail-title">' + esc(ex.name) + '</h2>' +
+    '<div class="detail-weekline">' + Math.round(ex.duration/60) + ' minutes</div>' +
+    '<div class="photo-row">' + photoSlot(ex, "a", "Start position") + photoSlot(ex, "b", "End position") + '</div>' +
+    '<div class="info-card"><h3>What to do</h3><p>' + esc(ex.what) + '</p></div>' +
+    timerHTML(sessionTimer, ex.duration, controls);
+  document.getElementById("sessionContent").innerHTML = html;
+  timerReset(sessionTimer, ex.duration);
+  document.getElementById("screen-session").scrollTop = 0;
 }
-function toggleTimer() {
-  if (timer.running) {
-    clearInterval(timer.interval);
-    timer.running = false;
-    breathStop(false);
+function sessionNext() {
+  timerStop(sessionTimer);
+  var n = PROGRAM[session.week-1].exercises.length;
+  if (session.idx < n - 1) {
+    session.idx++;
+    renderSessionStep();
   } else {
-    timer.running = true;
-    breathStart();
-    timer.interval = setInterval(function() {
-      timer.remaining--;
-      if (timer.remaining <= 0) { timer.remaining = 0; clearInterval(timer.interval); timer.running = false; breathStop(true); completeExercise(); }
-      updateTimerUI();
-    }, 1000);
+    completeSession();
   }
-  updateTimerUI();
 }
-
-/* ---------- completion ---------- */
-function completeExercise() {
-  if (!current) return;
-  state.done[current.id] = true;
-  state.totalSessions++;
-  var dk = dayKey(new Date());
-  state.days[dk] = (state.days[dk] || 0) + 1;
-  var today = todayStr();
-  if (state.lastDay !== today) {
-    var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-    state.streak = (state.lastDay === yesterday.toDateString()) ? state.streak + 1 : 1;
-    state.lastDay = today;
-    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
-  }
+function completeSession() {
+  state.sessions.push({ date: dayKey(new Date()), week: session.week });
+  markActivity();
   save();
-  document.getElementById("feedbackName").textContent = current.name + " complete";
+  document.getElementById("feedbackName").textContent = "Week " + session.week + " workout complete";
   document.querySelectorAll(".rating-btn").forEach(function(b){ b.classList.remove("selected"); });
   document.getElementById("feedbackNote").value = "";
   document.getElementById("screen-feedback").classList.add("active");
@@ -1109,11 +1303,10 @@ function completeExercise() {
 function finishFeedback() {
   var picked = Array.prototype.map.call(document.querySelectorAll(".rating-btn.selected"), function(b){ return b.textContent; });
   var note = document.getElementById("feedbackNote").value.trim();
-  if (current && (picked.length || note)) {
-    state.ratings[current.id] = picked;
+  if (picked.length || note) {
     state.log.push({
       when: new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" }),
-      name: current.name,
+      name: "Week " + session.week + " workout",
       rating: picked.join(", "),
       note: note
     });
@@ -1121,30 +1314,24 @@ function finishFeedback() {
   }
   document.getElementById("screen-feedback").classList.remove("active");
   checkMilestones();
-  var w = current ? current.week : 1;
-  var justFinishedWeek = weekDoneCount(w) === PROGRAM[w-1].exercises.length && !state.celebrated["w" + w];
-  var goBack = function() {
-    if (current && current.fromScreen === "practice") show("practice");
-    else renderWeek(w);
-  };
-  if (justFinishedWeek) {
+  var w = session.week;
+  if (weekComplete(w) && !state.celebrated["w" + w]) {
     state.celebrated["w" + w] = true;
     save();
     document.getElementById("weekdoneMark").textContent = "W" + w;
     document.getElementById("weekdoneTitle").textContent = "Week " + w + " complete";
     document.getElementById("weekdoneSub").textContent = w < 6
-      ? "Wonderful work, Barb. Week " + (w+1) + ", " + PROGRAM[w].title + ", is waiting whenever you are ready."
+      ? "You did the Week " + w + " workout " + GOAL + " times. Wonderful, Barb. Week " + (w+1) + ", " + PROGRAM[w].title + ", is ready whenever you are."
       : "You finished the whole six-week journey. One day at a time, and you did it.";
     document.getElementById("screen-weekdone").classList.add("active");
-    document.getElementById("screen-weekdone").dataset.goback = "1";
   } else {
-    goBack();
+    renderWeek(w);
   }
 }
 
 function checkMilestones() {
   MILESTONES.forEach(function(m) {
-    if (!state.badges[m.id] && m.test(state)) {
+    if (!state.badges[m.id] && m.test()) {
       state.badges[m.id] = new Date().toLocaleDateString();
       toast("Milestone earned: " + m.name);
     }
@@ -1157,10 +1344,10 @@ function renderPractice() {
   var html = "";
   PROGRAM.forEach(function(w) {
     w.exercises.forEach(function(e) {
-      html += '<button class="practice-card' + (state.done[e.id] ? ' completed' : '') + '" data-practice="' + e.id + '">' +
+      html += '<button class="practice-card" data-practice="' + e.id + '">' +
         '<span><span class="pc-week">Week ' + w.week + '</span>' +
         '<span class="pc-name" style="display:block">' + esc(e.name) + '</span></span>' +
-        '<span class="pc-meta">' + Math.round(e.duration/60) + ' min' + (state.done[e.id] ? ' &middot; done' : '') + '</span>' +
+        '<span class="pc-meta">' + Math.round(e.duration/60) + ' min</span>' +
         '</button>';
     });
   });
@@ -1194,21 +1381,21 @@ function renderCalendar() {
 function renderProgress() {
   renderCalendar();
   document.getElementById("pStreak").textContent = state.streak;
-  document.getElementById("pSessions").textContent = state.totalSessions;
+  document.getElementById("pSessions").textContent = state.sessions.length;
   document.getElementById("pBadges").textContent = Object.keys(state.badges).length;
 
   var rc = 2 * Math.PI * 33;
   var rings = "";
   PROGRAM.forEach(function(w) {
-    var done = weekDoneCount(w.week), total = w.exercises.length;
-    var frac = done / total;
+    var n = weekSessionCount(w.week);
+    var frac = Math.min(n, GOAL) / GOAL;
     rings += '<div class="ring-card' + (frac === 1 ? ' full' : '') + '">' +
       '<div class="ring-wrap"><svg viewBox="0 0 78 78">' +
       '<circle class="ring-track" cx="39" cy="39" r="33"/>' +
       '<circle class="ring-fill" cx="39" cy="39" r="33" stroke-dasharray="' + rc.toFixed(2) + '" stroke-dashoffset="' + (rc * (1 - frac)).toFixed(2) + '"/>' +
       '</svg><span class="ring-label">' + w.week + '</span></div>' +
       '<div class="ring-info"><div class="ri-title">' + esc(w.title) + '</div>' +
-      '<div class="ri-count">' + done + ' of ' + total + ' done</div></div>' +
+      '<div class="ri-count">' + (n >= GOAL ? 'Complete' : n + ' of ' + GOAL + ' workouts') + '</div></div>' +
       '</div>';
   });
   document.getElementById("ringGrid").innerHTML = rings;
@@ -1233,7 +1420,7 @@ function renderProgress() {
       (e.note ? '<div class="fb-note">"' + esc(e.note) + '"</div>' : '') +
       '</div>';
   });
-  document.getElementById("feedbackList").innerHTML = fb || '<p class="fb-empty">No feedback yet. After each exercise Barb can rate it and leave a note, and it lands here with the date.</p>';
+  document.getElementById("feedbackList").innerHTML = fb || '<p class="fb-empty">No feedback yet. After each workout Barb can tap how it felt and leave a note, and it lands here with the date.</p>';
 }
 
 function downloadFeedback() {
@@ -1252,39 +1439,6 @@ function downloadFeedback() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
-}
-
-/* ---------- breathing, built into the exercise timer ----------
-   Runs only while the timer runs. In 4 seconds, out 6 seconds,
-   about six breaths per minute, the pace research supports for
-   older adults. */
-var breath = { running: false, timeout: null };
-function breathStart() {
-  if (breath.running) return;
-  breath.running = true;
-  breathPhase(true);
-}
-function breathStop(resetVisual) {
-  breath.running = false;
-  clearTimeout(breath.timeout);
-  var ball = document.getElementById("breathBall");
-  var word = document.getElementById("breathWord");
-  if (resetVisual && ball) {
-    ball.style.transition = "transform 400ms ease";
-    ball.style.transform = "scale(0.7)";
-  }
-  if (resetVisual && word) word.textContent = "";
-}
-function breathPhase(inhale) {
-  if (!breath.running) return;
-  var ball = document.getElementById("breathBall");
-  var word = document.getElementById("breathWord");
-  if (!ball || !word) { breath.running = false; return; }
-  var ms = inhale ? 4000 : 6000;
-  word.textContent = inhale ? "Breathe in" : "Breathe out";
-  ball.style.transition = "transform " + ms + "ms cubic-bezier(0.37, 0, 0.63, 1)";
-  ball.style.transform = "scale(" + (inhale ? 1 : 0.7) + ")";
-  breath.timeout = setTimeout(function() { breathPhase(!inhale); }, ms);
 }
 
 /* ---------- video modal (used once links are added) ---------- */
@@ -1332,16 +1486,19 @@ document.body.addEventListener("click", function(ev) {
     case "nav-progress": show("progress"); break;
     case "continue": show("program"); break;
     case "close-exercise":
-      clearInterval(timer.interval); timer.running = false; breathStop(false);
+      timerStop(previewTimer);
       if (current && current.fromScreen === "practice") show("practice");
       else if (current) renderWeek(current.week);
       else show("program");
       break;
-    case "toggle-timer": toggleTimer(); break;
-    case "reset-timer": resetTimer(); toast("Timer reset. Take your time."); break;
-    case "finish-early":
-      clearInterval(timer.interval); timer.running = false; breathStop(true);
-      completeExercise();
+    case "toggle-timer": timerToggle(previewTimer); break;
+    case "reset-timer": timerReset(previewTimer); toast("Timer reset. Take your time."); break;
+    case "start-session": startSession(viewedWeek); break;
+    case "s-toggle": timerToggle(sessionTimer); break;
+    case "s-next": sessionNext(); break;
+    case "close-session":
+      timerStop(sessionTimer);
+      renderWeek(session.week);
       break;
     case "finish-feedback": finishFeedback(); break;
     case "close-weekdone":
