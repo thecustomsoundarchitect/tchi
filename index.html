@@ -656,7 +656,7 @@
     <div class="content">
       <h2 class="section-title">Practice All Moves</h2>
       <p class="section-subtitle">Any movement, any time, at your own pace.</p>
-      <div class="practice-grid" id="practiceGrid"></div>
+      <div id="practiceGrid"></div>
     </div>
   </div>
 
@@ -1343,13 +1343,15 @@ function checkMilestones() {
 function renderPractice() {
   var html = "";
   PROGRAM.forEach(function(w) {
+    html += '<h3 class="moves-heading serif">Week ' + w.week + ' &middot; ' + esc(w.title) + '</h3>' +
+      '<div class="practice-grid">';
     w.exercises.forEach(function(e) {
       html += '<button class="practice-card" data-practice="' + e.id + '">' +
-        '<span><span class="pc-week">Week ' + w.week + '</span>' +
-        '<span class="pc-name" style="display:block">' + esc(e.name) + '</span></span>' +
+        '<span class="pc-name" style="display:block">' + esc(e.name) + '</span>' +
         '<span class="pc-meta">' + Math.round(e.duration/60) + ' min</span>' +
         '</button>';
     });
+    html += '</div>';
   });
   document.getElementById("practiceGrid").innerHTML = html;
 }
