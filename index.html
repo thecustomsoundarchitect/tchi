@@ -12,18 +12,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f1412;
-      --surface-solid: #1a1f1c;
-      --text-primary: #f5f5f0;
-      --text-secondary: rgba(245,245,240,0.78);
-      --text-muted: rgba(245,245,240,0.5);
-      --accent: #c4a484;
-      --accent-light: #d4b896;
-      --sage: #8a9a8e;
-      --sage-light: #a8b8ac;
-      --border: rgba(255,255,255,0.1);
-      --glass: rgba(15, 20, 18, 0.75);
-      --glass-light: rgba(255,255,255,0.06);
+      --bg: #222823;
+      --surface-solid: #2d332d;
+      --text-primary: #f7f6ef;
+      --text-secondary: rgba(247,246,239,0.82);
+      --text-muted: rgba(247,246,239,0.55);
+      --accent: #d2ab63;
+      --accent-light: #e3c584;
+      --sage: #8fa393;
+      --sage-light: #adc0b1;
+      --border: rgba(226,197,132,0.22);
+      --glass: rgba(45, 51, 45, 0.72);
+      --glass-light: rgba(247,235,205,0.07);
       --radius: 18px;
     }
 
@@ -71,7 +71,7 @@
     }
     .bg-overlay {
       position: fixed; inset: 0; z-index: 1;
-      background: linear-gradient(180deg, rgba(15,20,18,0.45) 0%, rgba(15,20,18,0.88) 55%, rgba(15,20,18,0.99) 100%);
+      background: linear-gradient(180deg, rgba(34,40,35,0.35) 0%, rgba(34,40,35,0.8) 55%, rgba(34,40,35,0.96) 100%);
     }
 
     .glass {
@@ -86,7 +86,7 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 18px 24px;
       display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(to bottom, rgba(15,20,18,0.85), transparent);
+      background: linear-gradient(to bottom, rgba(34,40,35,0.85), transparent);
       pointer-events: none;
     }
     .top-nav > * { pointer-events: auto; }
@@ -110,7 +110,7 @@
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
       padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
       display: flex; justify-content: center; gap: 8px;
-      background: linear-gradient(to top, rgba(15,20,18,0.97) 0%, rgba(15,20,18,0.8) 65%, transparent 100%);
+      background: linear-gradient(to top, rgba(34,40,35,0.97) 0%, rgba(34,40,35,0.8) 65%, transparent 100%);
     }
     .nav-item {
       flex: 1; max-width: 170px;
@@ -198,7 +198,7 @@
     }
     .week-card-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(15,20,18,0.25) 0%, rgba(15,20,18,0.92) 100%);
+      background: linear-gradient(180deg, rgba(34,40,35,0.25) 0%, rgba(34,40,35,0.92) 100%);
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 26px;
     }
@@ -216,7 +216,7 @@
       text-transform: uppercase; letter-spacing: 0.05em;
     }
     .week-card-badge.locked {
-      background: rgba(15,20,18,0.7); color: var(--text-muted);
+      background: rgba(34,40,35,0.7); color: var(--text-muted);
       border: 1px solid var(--border);
     }
     .week-card-badge.done { background: var(--sage); }
@@ -284,7 +284,7 @@
     .photo-caption {
       position: absolute; left: 0; right: 0; bottom: 0;
       padding: 8px 12px;
-      background: rgba(15,20,18,0.75);
+      background: rgba(34,40,35,0.75);
       font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--text-secondary); text-align: center;
     }
@@ -340,13 +340,13 @@
     .timer-breath-ball {
       position: absolute; inset: 26px;
       border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, rgba(212,184,150,0.4), rgba(196,164,132,0.08) 72%);
+      background: radial-gradient(circle at 40% 35%, rgba(224,143,163,0.45), rgba(224,143,163,0.08) 72%);
       transform: scale(0.7);
       z-index: 0;
     }
     .timer-breath-word {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; color: var(--accent-light);
+      font-size: 1.5rem; color: #e8a4b6;
       margin-top: 8px; min-height: 1.6em;
     }
     .breath-hint {
@@ -504,7 +504,7 @@
     .milestone.unlocked {
       opacity: 1;
       border-color: rgba(196,164,132,0.5);
-      background: linear-gradient(135deg, rgba(196,164,132,0.12), rgba(15,20,18,0.6));
+      background: linear-gradient(135deg, rgba(196,164,132,0.12), rgba(34,40,35,0.6));
     }
     .medallion {
       width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%;
@@ -521,7 +521,7 @@
     .video-modal {
       position: fixed; inset: 0; z-index: 160;
       display: flex; align-items: center; justify-content: center; padding: 24px;
-      background: rgba(15,20,18,0.96);
+      background: rgba(34,40,35,0.96);
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
     .video-modal.active { opacity: 1; pointer-events: auto; }
