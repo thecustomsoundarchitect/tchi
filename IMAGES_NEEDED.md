@@ -1,8 +1,11 @@
 # Photos needed
 
 Drop each photo into the img folder with the exact filename shown.
-Photo a = start position. Photo b = end position.
-jpg format. The app picks them up automatically, no code changes.
+Photo a = start position. Photo b = end position. jpg format.
+
+Note for the current build: photo display is not wired in yet, so
+photos will not show in the app until that is added. Collect and name
+them from this list now; the filenames below are the spec.
 
 ## Week 1
 
