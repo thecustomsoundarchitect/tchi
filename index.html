@@ -928,6 +928,15 @@ body[data-view="player"] #view-player {
 #view-home .home-module .module-progress-count { color: #000; font-size: var(--text-small); }
 #view-home .home-module-note { color: #000; font-size: var(--text-emphasis); }
 #view-home .home-subtext { color: #000; font-size: 20px; }
+@media (min-width: 700px) {
+  #view-home .home-subtext { font-size: 28px; line-height: 1.35; }
+  #view-home .home-module .label { font-size: 23px; line-height: 1.35; }
+  #view-home .home-module-title { font-size: 31px; line-height: 1.2; }
+  #view-home .home-module .caption { font-size: 23px; line-height: 1.45; }
+  #view-home .home-module .module-progress-name,
+  #view-home .home-module .module-progress-count { font-size: 22px; line-height: 1.35; }
+  #view-home .home-module-note { font-size: 23px; line-height: 1.5; }
+}
 .watercolor-actions { align-items: stretch; gap: 20px; }
 .watercolor-actions .btn {
   position: relative;
@@ -1277,7 +1286,7 @@ function renderHome() {
         <p class="label mb-8">Active Module</p>
         <div style="padding: 20px 0; border-top: 1px solid rgba(139,107,126,0.1);">
           <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
-            <span style="font-family:var(--font-display); font-size:22px; font-weight:600;">${mod.name}</span>
+            <span class="home-module-title" style="font-family:var(--font-display); font-weight:600;">${mod.name}</span>
             <span class="label">Week ${mod.id}</span>
           </div>
           <p class="caption">${mod.focus} &middot; ${mod.moveCount} moves</p>
