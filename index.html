@@ -21,6 +21,9 @@
   --radius: 8px;
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Work Sans", system-ui, sans-serif;
+  --text-small: 16px;
+  --text-body: 17px;
+  --text-emphasis: 18px;
   --transition: 0.2s ease-in-out;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -62,16 +65,16 @@ h1 { font-size: 36px; }
 h2 { font-size: 28px; }
 h3 { font-size: 20px; }
 .display { font-size: 48px; font-weight: 700; }
-p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; font-weight: 400; }
+p, .body { font-family: var(--font-body); font-size: var(--text-body); line-height: 1.6; font-weight: 400; }
 .label {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-small);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--mauve);
 }
-.caption { font-size: 14px; color: var(--mauve); line-height: 1.5; }
+.caption { font-size: var(--text-small); color: var(--mauve); line-height: 1.5; }
 .btn {
   display: inline-flex;
   align-items: center;
@@ -102,7 +105,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   border: 1.5px solid var(--aubergine);
 }
 .btn-secondary:hover { background: rgba(61, 43, 58, 0.04); }
-.btn-small { height: 44px; font-size: 14px; padding: 0 20px; }
+.btn-small { height: 44px; font-size: var(--text-small); padding: 0 20px; }
 .hairline {
   height: 1px;
   background: var(--mauve);
@@ -165,7 +168,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   border: none;
   background: none;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-small);
   font-weight: 500;
   position: relative;
 }
@@ -209,7 +212,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
 }
 .program-header { margin-bottom: 24px; }
 .program-nudge {
-  font-size: 14px;
+  font-size: var(--text-small);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -247,7 +250,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
 }
 .module-row.locked .module-week-num { color: var(--mauve); opacity: 0.15; }
 .module-title { font-family: var(--font-body); font-size: 18px; font-weight: 500; margin-bottom: 4px; position: relative; z-index: 1; }
-.module-meta { font-size: 14px; color: var(--mauve); position: relative; z-index: 1; }
+.module-meta { font-size: var(--text-small); color: var(--mauve); position: relative; z-index: 1; }
 .module-state-marker {
   position: absolute;
   right: 16px;
@@ -287,7 +290,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   opacity: 0.6;
 }
 .preview-header { margin-top: 60px; margin-bottom: 4px; }
-.preview-week-label { font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mauve); margin-bottom: 24px; }
+.preview-week-label { font-size: var(--text-small); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mauve); margin-bottom: 24px; }
 .move-list { display: flex; flex-direction: column; }
 .move-row {
   display: flex;
@@ -319,17 +322,17 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
 }
 .move-info { flex: 1; }
 .move-name { font-family: var(--font-body); font-size: 16px; font-weight: 500; margin-bottom: 2px; }
-.move-cue { font-size: 14px; color: var(--mauve); line-height: 1.4; }
-.move-duration { font-size: 14px; color: var(--mauve); opacity: 0.7; margin-top: 4px; }
+.move-cue { font-size: var(--text-small); color: var(--mauve); line-height: 1.5; }
+.move-duration { font-size: var(--text-small); color: var(--mauve); opacity: 0.85; margin-top: 4px; }
 .move-photos { display: flex; gap: 12px; margin-top: 10px; }
 .photo-slot { width: 120px; }
 .photo-slot img { width: 100%; border-radius: 10px; display: block; }
-.photo-caption { font-size: 12px; color: var(--mauve); text-align: center; margin-top: 4px; }
+.photo-caption { font-size: 14px; color: var(--mauve); text-align: center; margin-top: 4px; }
 .video-btn {
   margin-top: 10px;
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-small);
   color: var(--mauve);
   background: none;
   border: 1px solid rgba(139, 107, 126, 0.35);
@@ -389,7 +392,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   border: none;
   color: var(--mauve);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--text-small);
   font-family: var(--font-body);
   font-weight: 500;
   z-index: 10;
@@ -398,7 +401,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   position: absolute;
   top: 24px;
   right: 24px;
-  font-size: 14px;
+  font-size: var(--text-small);
   color: var(--mauve);
   font-weight: 500;
   z-index: 10;
@@ -503,7 +506,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   border: 1.5px solid rgba(139, 107, 126, 0.2);
   border-radius: var(--radius);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-small);
   resize: none;
   margin-bottom: 16px;
   background: var(--warm-surface);
@@ -515,7 +518,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   display: block;
   text-align: center;
   margin-top: 16px;
-  font-size: 14px;
+  font-size: var(--text-small);
   color: var(--mauve);
   background: none;
   border: none;
@@ -565,7 +568,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   margin-bottom: 8px;
   color: var(--aubergine);
 }
-.breathing-sub { color: var(--mauve); text-align: center; margin-bottom: 48px; font-size: 14px; }
+.breathing-sub { color: var(--mauve); text-align: center; margin-bottom: 48px; font-size: var(--text-small); }
 .breathing-timer { font-family: var(--font-body); font-size: 18px; color: var(--mauve); margin-bottom: 32px; font-weight: 500; }
 .breathing-stop { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); }
 .breathing-settings-btn {
@@ -612,7 +615,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   color: var(--aubergine);
 }
 .practice-week-sub {
-  font-size: 14px;
+  font-size: var(--text-small);
   color: var(--mauve);
   margin-bottom: 16px;
   font-style: italic;
@@ -640,8 +643,8 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   color: var(--mauve);
 }
 .practice-move-name { font-weight: 500; font-size: 16px; margin-bottom: 2px; }
-.practice-move-desc { font-size: 14px; color: var(--mauve); line-height: 1.5; }
-.practice-move-purpose { font-size: 14px; color: var(--mauve); margin-top: 6px; opacity: 0.7; font-style: italic; }
+.practice-move-desc { font-size: var(--text-small); color: var(--mauve); line-height: 1.5; }
+.practice-move-purpose { font-size: var(--text-small); color: var(--mauve); margin-top: 6px; opacity: 0.85; font-style: italic; }
 .progress-header { margin-bottom: 24px; }
 .progress-wash {
   position: fixed;
@@ -661,14 +664,14 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   filter: blur(30px);
 }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 32px; }
-.calendar-day-header { text-align: center; font-size: 14px; color: var(--mauve); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 0; }
+.calendar-day-header { text-align: center; font-size: var(--text-small); color: var(--mauve); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 0; }
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: var(--text-small);
   font-weight: 400;
   color: var(--mauve);
   position: relative;
@@ -688,8 +691,8 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
 }
 .module-progress-card:last-child { border-bottom: none; }
 .module-progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-.module-progress-name { font-weight: 500; font-size: 14px; }
-.module-progress-count { font-size: 14px; color: var(--mauve); }
+.module-progress-name { font-weight: 500; font-size: var(--text-small); }
+.module-progress-count { font-size: var(--text-small); color: var(--mauve); text-align: right; }
 .summary-card {
   background: var(--warm-surface);
   border: 1px solid rgba(139, 107, 126, 0.12);
@@ -698,7 +701,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   margin-bottom: 24px;
 }
 .summary-card h3 { font-family: var(--font-display); font-size: 18px; margin-bottom: 12px; color: var(--aubergine); }
-.summary-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(139, 107, 126, 0.08); font-size: 14px; }
+.summary-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(139, 107, 126, 0.08); font-size: var(--text-small); }
 .summary-stat:last-child { border-bottom: none; }
 .summary-stat span:first-child { color: var(--mauve); }
 .summary-stat span:last-child { font-weight: 500; }
@@ -723,8 +726,8 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   opacity: 0.6;
 }
 .reward-item.unlocked .reward-icon { opacity: 1; background: radial-gradient(ellipse at 40% 35%, var(--dusty-rose), var(--plum-wash) 70%); }
-.reward-name { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
-.reward-desc { font-size: 14px; color: var(--mauve); line-height: 1.3; }
+.reward-name { font-weight: 500; font-size: var(--text-small); margin-bottom: 2px; }
+.reward-desc { font-size: var(--text-small); color: var(--mauve); line-height: 1.4; }
 .text-center { text-align: center; }
 .mb-8 { margin-bottom: 8px; }
 .mb-16 { margin-bottom: 16px; }
@@ -744,8 +747,7 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
   h2 { font-size: 34px; }
   h3 { font-size: 24px; }
   p, .body { font-size: 18px; }
-  .caption { font-size: 16px; }
-  .label { font-size: 14px; }
+  .caption, .label { font-size: 17px; }
   .btn { height: 64px; font-size: 20px; }
   #app { padding-bottom: 110px; }
   #bottom-nav {
@@ -758,23 +760,24 @@ p, .body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; fon
 #page-bg { opacity: 0; transition: opacity 0.4s ease; }
 body[data-view="home"] #page-bg,
 body[data-view="feedback"] #page-bg { opacity: 1; }
-#view-home .module-progress-name {
+#view-home .module-progress-name,
+#view-home .module-progress-count {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: var(--text-small);
 }
 #view-home .label,
 #view-home .caption {
   font-family: var(--font-display);
   text-transform: none;
   letter-spacing: normal;
-  font-size: 17px;
+  font-size: var(--text-small);
 }
 #view-home .home-module { color: #000; }
 #view-home .home-module .label,
-#view-home .home-module .caption { color: #000; font-size: 18px; }
+#view-home .home-module .caption { color: #000; font-size: var(--text-body); }
 #view-home .home-module .module-progress-name,
-#view-home .home-module .module-progress-count { color: #000; font-size: 16px; }
-#view-home .home-module-note { color: #000; font-size: 20px; }
+#view-home .home-module .module-progress-count { color: #000; font-size: var(--text-small); }
+#view-home .home-module-note { color: #000; font-size: var(--text-emphasis); }
 #view-home .home-subtext { color: #000; font-size: 20px; }
 #view-home .home-actions { align-items: stretch; gap: 20px; }
 #view-home .home-actions .btn {
@@ -1016,6 +1019,18 @@ function getModuleMoves(moduleId) {
   return MOVES.filter(m => m.moduleId === moduleId);
 }
 
+function getModuleProgressMessage(moduleId, progress) {
+  const sessionsRemaining = Math.max(3 - progress, 0);
+
+  if (moduleId === MODULES.length) {
+    if (sessionsRemaining === 0) return "Program complete";
+    return `${sessionsRemaining} session${sessionsRemaining === 1 ? "" : "s"} to complete program`;
+  }
+
+  if (sessionsRemaining === 0) return `Week ${moduleId + 1} unlocked`;
+  return `${sessionsRemaining} session${sessionsRemaining === 1 ? "" : "s"} to unlock Week ${moduleId + 1}`;
+}
+
 function formatDate(date) {
   return date.toISOString().split("T")[0];
 }
@@ -1102,7 +1117,7 @@ function renderHome() {
           <div style="margin-top:16px;">
             <div class="module-progress-header" style="margin-bottom:6px;">
               <span class="module-progress-name">${state.moduleProgress[mod.id]} session${state.moduleProgress[mod.id] !== 1 ? 's' : ''}</span>
-              <span class="module-progress-count">${Math.min(state.moduleProgress[mod.id], 3)}/3 to unlock next</span>
+              <span class="module-progress-count">${getModuleProgressMessage(mod.id, state.moduleProgress[mod.id])}</span>
             </div>
             <div class="progress-track">
               <div class="progress-fill" style="width:${Math.min(state.moduleProgress[mod.id]/3*100, 100)}%"></div>
