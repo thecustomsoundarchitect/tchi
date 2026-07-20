@@ -593,9 +593,30 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
   min-width: 180px;
   padding: 0 24px;
 }
-.feedback-view { padding-top: 80px; }
-.feedback-view h2 { margin-bottom: 12px; }
-.feedback-view p { color: var(--mauve); margin-bottom: 32px; }
+.feedback-view { padding-top: 48px; }
+.completion-message {
+  position: relative;
+  padding: 26px 24px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(96, 112, 100, 0.22);
+  border-radius: 26px 12px 26px 12px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(176,190,181,0.26));
+  box-shadow: 0 10px 28px rgba(74, 55, 68, 0.08);
+}
+.completion-message::before {
+  content: "🪷";
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 46px;
+  opacity: 0.18;
+}
+.completion-message h2 { margin: 0 36px 16px 0; font-size: 29px; }
+.completion-message p { color: var(--aubergine); margin-bottom: 16px; line-height: 1.65; }
+.completion-message p:last-child { margin-bottom: 0; }
+.feedback-prompt h3 { margin-bottom: 8px; }
+.feedback-prompt > p { color: var(--mauve); margin-bottom: 20px; }
 .feedback-textarea {
   width: 100%;
   padding: 16px;
@@ -798,14 +819,59 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
   color: var(--mauve);
   position: relative;
 }
+.calendar-day-number { position: relative; z-index: 2; font-weight: 500; }
 .calendar-day.today { border: 1.5px solid var(--aubergine); }
 .calendar-day.other-month { opacity: 0.2; }
-.calendar-bloom {
+.calendar-workout-mark {
   position: absolute;
-  inset: 2px;
-  border-radius: 55% 45% 50% 50%;
-  background: radial-gradient(ellipse at 40% 35%, var(--dusty-rose), transparent 70%);
-  opacity: 0.7;
+  inset: 1px;
+  z-index: 1;
+  border-radius: 50%;
+  background: #8fae98;
+  box-shadow: 0 2px 7px rgba(63, 92, 72, 0.28);
+}
+.calendar-day.has-workout .calendar-day-number { color: #18281e; font-weight: 700; }
+.calendar-workout-check {
+  position: absolute;
+  right: -2px;
+  top: -4px;
+  z-index: 3;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  background: #365c43;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.calendar-meditation-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  z-index: 3;
+  width: 9px;
+  height: 9px;
+  transform: translateX(-50%);
+  border: 1.5px solid var(--paper);
+  border-radius: 50%;
+  background: var(--plum-wash);
+}
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: -16px 0 32px;
+  color: var(--mauve);
+  font-size: 15px;
+}
+.calendar-legend-item { display: inline-flex; align-items: center; gap: 8px; }
+.calendar-legend-swatch { width: 14px; height: 14px; border-radius: 50%; }
+.calendar-legend-swatch.workout { background: #8fae98; box-shadow: inset 0 0 0 3px #365c43; }
+.calendar-legend-swatch.meditation { background: var(--plum-wash); }
 }
 .module-progress-card {
   padding: 14px 0;
@@ -1045,15 +1111,15 @@ body[data-view="player"] #view-player {
 // ===================== DATA =====================
 const MODULES = [
   { id: 1, name: "Foundation and Awareness", focus: "Mostly seated, gentle introduction", moveCount: 8, wash: "linear-gradient(90deg, rgba(168,131,149,0.08), transparent 80%)" },
-  { id: 2, name: "Flowing Movements", focus: "Adds rhythm and coordination", moveCount: 9, wash: "linear-gradient(90deg, rgba(201,169,178,0.08), transparent 80%)" },
-  { id: 3, name: "Building Strength and Balance", focus: "First standing work, chair support", moveCount: 10, wash: "linear-gradient(90deg, rgba(176,190,181,0.08), transparent 80%)" },
-  { id: 4, name: "Advanced Flow and Coordination", focus: "Linking movements together", moveCount: 10, wash: "linear-gradient(90deg, rgba(183,192,176,0.08), transparent 80%)" },
-  { id: 5, name: "Strength and Stability", focus: "Classic tai chi forms", moveCount: 10, wash: "linear-gradient(90deg, rgba(203,192,208,0.08), transparent 80%)" },
-  { id: 6, name: "Complete Integration", focus: "Her full combined practice", moveCount: 5, wash: "linear-gradient(90deg, rgba(168,131,149,0.1), transparent 80%)" }
+  { id: 2, name: "Flowing Movements", focus: "Adds rhythm and coordination", moveCount: 10, wash: "linear-gradient(90deg, rgba(201,169,178,0.08), transparent 80%)" },
+  { id: 3, name: "Building Strength and Balance", focus: "First standing work, chair support", moveCount: 11, wash: "linear-gradient(90deg, rgba(176,190,181,0.08), transparent 80%)" },
+  { id: 4, name: "Advanced Flow and Coordination", focus: "Linking movements together", moveCount: 11, wash: "linear-gradient(90deg, rgba(183,192,176,0.08), transparent 80%)" },
+  { id: 5, name: "Strength and Stability", focus: "Classic tai chi forms", moveCount: 11, wash: "linear-gradient(90deg, rgba(203,192,208,0.08), transparent 80%)" },
+  { id: 6, name: "Complete Integration", focus: "Her full combined practice", moveCount: 6, wash: "linear-gradient(90deg, rgba(168,131,149,0.1), transparent 80%)" }
 ];
 
 const MOVES = [
-  { id: 1, moduleId: 1, name: "Seated Mountain Pose", cue: "Sit tall, feet flat, hands on thighs. Feel your spine lengthen.", duration: 60, purpose: "Builds posture awareness", video: "w1-01" },
+  { id: 1, moduleId: 1, name: "Seated Mountain Pose", cue: "Sit tall, feet flat, hands on thighs. Feel your spine lengthen.", duration: 60, purpose: "Builds posture awareness", video: "" },
   { id: 2, moduleId: 1, name: "Neck Rolls and Stretches", cue: "Slowly roll your head in a gentle circle. Keep shoulders relaxed.", duration: 60, purpose: "Releases neck tension", video: "" },
   { id: 3, moduleId: 1, name: "Shoulder Circles", cue: "Lift shoulders up, back, down, and around. Reverse direction slowly.", duration: 60, purpose: "Improves shoulder mobility", video: "" },
   { id: 4, moduleId: 1, name: "Ankle and Foot Circles", cue: "Lift one foot slightly, circle the ankle. Switch feet.", duration: 60, purpose: "Warms up lower joints", video: "" },
@@ -1166,6 +1232,7 @@ function loadState() {
 }
 
 let state = loadState();
+if (!Array.isArray(state.calendar)) state.calendar = [];
 if (!Array.isArray(state.meditationDurations)) {
   state.meditationDurations = MEDITATION_TRACKS.map(() => 30);
 }
@@ -1173,6 +1240,15 @@ state.meditationDurations = MEDITATION_TRACKS.map((_, index) => state.meditation
 state.meditationCompletions = state.meditationCompletions || 0;
 state.meditationMinutes = state.meditationMinutes || 0;
 if (!Array.isArray(state.meditationCalendar)) state.meditationCalendar = [];
+
+const BARB_FIRST_WORKOUT_DATE = "2026-07-19";
+if (!state.barbsFirstWorkoutCredited) {
+  state.moduleProgress[1] = Math.max(state.moduleProgress[1] || 0, 1);
+  if (!state.calendar.includes(BARB_FIRST_WORKOUT_DATE)) state.calendar.push(BARB_FIRST_WORKOUT_DATE);
+  state.barbsFirstWorkoutCredited = true;
+  checkUnlocks();
+  saveState();
+}
 
 function saveState() {
   localStorage.setItem("taichi_barb_state_v2", JSON.stringify(state));
@@ -1199,7 +1275,11 @@ function getActiveModule() {
 }
 
 function getModuleMoves(moduleId) {
-  return MOVES.filter(m => m.moduleId === moduleId);
+  const moduleMoves = MOVES.filter(m => m.moduleId === moduleId);
+  if (moduleId === 1) return moduleMoves;
+
+  const seatedMountainPose = MOVES.find(m => m.name === "Seated Mountain Pose");
+  return seatedMountainPose ? [seatedMountainPose, ...moduleMoves] : moduleMoves;
 }
 
 function getModuleProgressMessage(moduleId, progress) {
@@ -1400,10 +1480,15 @@ function renderProgress() {
   }
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isActive = state.calendar.includes(dateStr) || state.meditationCalendar.includes(dateStr);
+    const hasWorkout = state.calendar.includes(dateStr);
+    const hasMeditation = state.meditationCalendar.includes(dateStr);
     const isToday = dateStr === today;
-    const bloomStyle = isActive ? `<div class="calendar-bloom" style="transform: rotate(${d * 17 % 360}deg) scale(${0.9 + (d % 3) * 0.1});"></div>` : '';
-    calendarHTML += `<div class="calendar-day ${isToday ? 'today' : ''}">${bloomStyle}${d}</div>`;
+    calendarHTML += `
+      <div class="calendar-day ${isToday ? 'today' : ''} ${hasWorkout ? 'has-workout' : ''}" aria-label="${monthNames[currentMonth]} ${d}${hasWorkout ? ', workout complete' : ''}${hasMeditation ? ', meditation complete' : ''}">
+        ${hasWorkout ? '<div class="calendar-workout-mark"></div><span class="calendar-workout-check">✓</span>' : ''}
+        ${hasMeditation ? '<span class="calendar-meditation-mark"></span>' : ''}
+        <span class="calendar-day-number">${d}</span>
+      </div>`;
   }
 
   const total = totalSessions(state);
@@ -1432,6 +1517,10 @@ function renderProgress() {
       <div class="calendar-grid">
         ${dayNames.map(d => `<div class="calendar-day-header">${d}</div>`).join('')}
         ${calendarHTML}
+      </div>
+      <div class="calendar-legend" aria-label="Calendar key">
+        <span class="calendar-legend-item"><span class="calendar-legend-swatch workout"></span>Workout complete</span>
+        <span class="calendar-legend-item"><span class="calendar-legend-swatch meditation"></span>Meditation complete</span>
       </div>
       <p class="label mb-16">Module Progress</p>
       ${MODULES.map(mod => {
@@ -1537,11 +1626,19 @@ function renderPlayer() {
 function renderFeedback() {
   return `
     <div class="view feedback-view" id="view-feedback">
-      <h2>How did that feel?</h2>
-      <p>Write anything you'd like to remember...</p>
-      <textarea class="feedback-textarea" rows="4" placeholder="Your thoughts..." id="feedback-note"></textarea>
-      <button class="btn btn-primary" onclick="submitFeedback()">Save</button>
-      <button class="skip-link" onclick="skipFeedback()">Skip</button>
+      <section class="completion-message" aria-label="A message for Mom">
+        <h2>Mom, you did it.</h2>
+        <p>You showed up for yourself. You moved your body, you breathed, you rested when you needed to. That takes courage, especially after everything your body has been through.</p>
+        <p>This is all for you, your health, your happiness, your strength. And you proved today that you have all of those things.</p>
+        <p>I am so, so proud of you. Keep moving. Keep breathing. Keep being the amazing woman you are. I love you.</p>
+      </section>
+      <section class="feedback-prompt">
+        <h3>How did that feel?</h3>
+        <p>Write anything you'd like to remember.</p>
+        <textarea class="feedback-textarea" rows="4" placeholder="Your thoughts..." id="feedback-note"></textarea>
+        <button class="btn btn-primary" onclick="submitFeedback()">Save</button>
+        <button class="skip-link" onclick="skipFeedback()">Skip</button>
+      </section>
     </div>
   `;
 }

@@ -23,8 +23,9 @@ home screen.
 - 6 modules, one per week: Foundation and Awareness, Flowing
   Movements, Building Strength and Balance, Advanced Flow and
   Coordination, Strength and Stability, Complete Integration.
-- 52 moves total (8, 9, 10, 10, 10, 5). Each move has a name, a cue
-  for what to do, a duration, and a purpose line.
+- 52 unique moves. Seated Mountain Pose begins every workout, giving
+  the modules 8, 10, 11, 11, 11, and 6 practice steps. Each move has a
+  name, a cue for what to do, a duration, and a purpose line.
 - Goal: 3 sessions per module, then the next module unlocks.
 - Breathing exercise is available any time from Home.
 
