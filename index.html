@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tai Chi — Barb</title>
+<title>Tai Chi for Barb</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -254,8 +254,11 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .meditation-placeholder {
   width: 100%; margin-top: 16px; min-height: 48px; border: 0; border-radius: 24px;
   background: rgba(203, 192, 208, 0.28); color: var(--mauve);
-  font-family: var(--font-body); font-size: 16px; font-weight: 600;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
 }
+.meditation-placeholder:hover { background: rgba(176, 190, 181, 0.36); }
+.meditation-placeholder:active { transform: scale(0.98); }
 .program-header { margin-bottom: 24px; }
 .program-nudge {
   font-size: 16px;
@@ -330,38 +333,6 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .module-row.locked .module-week-num { color: var(--watercolor-green); opacity: 0.68; }
 .module-title { font-family: var(--font-body); font-size: 19px; font-weight: 500; margin-bottom: 4px; position: relative; z-index: 1; }
 .module-meta { font-size: var(--text-reading); color: var(--mauve); position: relative; z-index: 1; }
-.module-state-marker {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  z-index: 1;
-}
-.marker-ring {
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--mauve);
-  border-radius: 50%;
-  opacity: 0.4;
-}
-.marker-bloom {
-  width: 20px;
-  height: 20px;
-  border-radius: 60% 40% 55% 45%;
-  background: radial-gradient(ellipse at 40% 40%, var(--dusty-rose), transparent 70%);
-  opacity: 0.7;
-  transform: translate(-2px, -2px);
-}
-.marker-full {
-  width: 18px;
-  height: 18px;
-  border-radius: 55% 45% 50% 50%;
-  background: radial-gradient(ellipse at 35% 35%, var(--dusty-rose), var(--plum-wash));
-  opacity: 0.8;
-  transform: translate(-1px, -1px);
-}
 .lock-icon-small {
   width: 14px;
   height: 14px;
@@ -771,6 +742,32 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .practice-move-desc { font-size: var(--text-reading); color: var(--mauve); line-height: 1.5; }
 .practice-move-purpose { font-size: var(--text-reading); color: var(--mauve); margin-top: 6px; opacity: 0.85; font-style: italic; }
 .progress-header { margin-bottom: 24px; }
+.progress-hero {
+  position: relative;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+  margin: -8px 0 24px;
+  overflow: hidden;
+  border-radius: 28px 12px 28px 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 250, 251, 0.22), rgba(61, 43, 58, 0.72)),
+    url("img/home-lotus-background.png") center 46% / cover;
+  box-shadow: 0 12px 30px rgba(74, 55, 68, 0.13);
+}
+.progress-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgba(61, 43, 58, 0.62) 100%);
+  pointer-events: none;
+}
+.progress-hero-copy { position: relative; z-index: 1; }
+.progress-hero .label { color: #fff; opacity: 0.88; }
+.progress-hero h2 { color: #fff; font-size: 34px; margin: 4px 0 6px; }
+.progress-hero .caption { color: #fff; }
 .progress-wash {
   position: fixed;
   inset: 0;
@@ -819,11 +816,12 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .module-progress-name { font-weight: 500; font-size: var(--text-small); }
 .module-progress-count { font-size: var(--text-small); color: var(--mauve); text-align: right; }
 .summary-card {
-  background: var(--warm-surface);
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(203,192,208,0.18));
   border: 1px solid rgba(139, 107, 126, 0.12);
-  border-radius: var(--radius);
+  border-radius: 18px;
   padding: 20px;
   margin-bottom: 24px;
+  box-shadow: 0 8px 22px rgba(74, 55, 68, 0.06);
 }
 .summary-card h3 { font-family: var(--font-display); font-size: 22px; margin-bottom: 12px; color: var(--aubergine); }
 .summary-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(139, 107, 126, 0.08); font-size: var(--text-reading); }
@@ -833,7 +831,9 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .rewards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
 .reward-item {
   text-align: center;
-  padding: 12px 4px;
+  padding: 14px 6px;
+  border-radius: 16px;
+  background: linear-gradient(155deg, rgba(255,255,255,0.78), rgba(201,169,178,0.12));
   transition: transform var(--transition);
 }
 .reward-item:hover { transform: translateY(-2px); }
@@ -851,6 +851,9 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
   opacity: 0.6;
 }
 .reward-item.unlocked .reward-icon { opacity: 1; background: radial-gradient(ellipse at 40% 35%, var(--dusty-rose), var(--plum-wash) 70%); }
+.reward-item.meditation-reward { background: linear-gradient(155deg, rgba(255,255,255,0.82), rgba(176,190,181,0.24)); }
+.reward-item.meditation-reward .reward-icon { background: radial-gradient(ellipse at 40% 35%, var(--muted-jade), transparent 72%); }
+.reward-item.meditation-reward.unlocked .reward-icon { background: radial-gradient(ellipse at 40% 35%, #cadbcf, var(--watercolor-green) 75%); }
 .reward-name { font-weight: 500; font-size: var(--text-reading); margin-bottom: 2px; }
 .reward-desc { font-size: var(--text-reading); color: var(--mauve); line-height: 1.4; }
 .text-center { text-align: center; }
@@ -1125,6 +1128,9 @@ const REWARDS = [
   { id: "dedicated", name: "Dedicated", desc: "Complete 10 total sessions", icon: "⭐", condition: s => totalSessions(s) >= 10 },
   { id: "devoted", name: "Devoted", desc: "Complete 20 total sessions", icon: "✨", condition: s => totalSessions(s) >= 20 },
   { id: "breathe", name: "Breathe Easy", desc: "Practice breathing 5 times", icon: "🫧", condition: s => (s.breathingCompletions || 0) >= 5 },
+  { id: "quiet_beginning", type: "meditation", name: "Quiet Beginning", desc: "Complete 1 meditation", icon: "🕯️", condition: s => (s.meditationCompletions || 0) >= 1 },
+  { id: "still_waters", type: "meditation", name: "Still Waters", desc: "Complete 5 meditations", icon: "💧", condition: s => (s.meditationCompletions || 0) >= 5 },
+  { id: "deep_calm", type: "meditation", name: "Deep Calm", desc: "Meditate for 150 minutes", icon: "🌙", condition: s => (s.meditationMinutes || 0) >= 150 },
   { id: "century", name: "Century", desc: "Complete 100 total sessions", icon: "👑", condition: s => totalSessions(s) >= 100 }
 ];
 
@@ -1150,6 +1156,9 @@ function loadState() {
     feedback: [],
     breathingSettings: { in: 4, out: 6, duration: 3, tone: false },
     meditationDurations: [30, 30, 30, 30, 30],
+    meditationCompletions: 0,
+    meditationMinutes: 0,
+    meditationCalendar: [],
     breathingCompletions: 0,
     currentView: "home",
     activeModule: 1
@@ -1161,6 +1170,9 @@ if (!Array.isArray(state.meditationDurations)) {
   state.meditationDurations = MEDITATION_TRACKS.map(() => 30);
 }
 state.meditationDurations = MEDITATION_TRACKS.map((_, index) => state.meditationDurations[index] || 30);
+state.meditationCompletions = state.meditationCompletions || 0;
+state.meditationMinutes = state.meditationMinutes || 0;
+if (!Array.isArray(state.meditationCalendar)) state.meditationCalendar = [];
 
 function saveState() {
   localStorage.setItem("taichi_barb_state_v2", JSON.stringify(state));
@@ -1324,13 +1336,6 @@ function renderProgram() {
       <p class="program-nudge">Aim for one module per week. Six weeks, one path.</p>
       ${MODULES.map(mod => {
         const unlocked = state.moduleUnlocked[mod.id];
-        const progress = state.moduleProgress[mod.id];
-        const complete = progress >= SESSIONS_PER_WEEK;
-        let marker = '';
-        if (!unlocked) marker = '';
-        else if (complete) marker = '<div class="module-state-marker"><div class="marker-full"></div></div>';
-        else if (progress > 0) marker = '<div class="module-state-marker"><div class="marker-bloom"></div></div>';
-        else marker = '<div class="module-state-marker"><div class="marker-ring"></div></div>';
         return `
           <div class="module-row ${unlocked ? '' : 'locked'}" onclick="${unlocked ? `openPreview(${mod.id})` : ''}">
             <div class="module-row-bg" style="background: ${mod.wash};"></div>
@@ -1342,7 +1347,6 @@ function renderProgram() {
               <div class="module-title">${unlocked ? mod.name : `Week ${mod.id} · Locked`}</div>
               <div class="module-meta">${unlocked ? mod.focus : 'Complete Week ' + (mod.id - 1) + ' to unlock'}</div>
             </div>
-            ${marker}
           </div>
           <div class="hairline"></div>
         `;
@@ -1396,7 +1400,7 @@ function renderProgress() {
   }
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isActive = state.calendar.includes(dateStr);
+    const isActive = state.calendar.includes(dateStr) || state.meditationCalendar.includes(dateStr);
     const isToday = dateStr === today;
     const bloomStyle = isActive ? `<div class="calendar-bloom" style="transform: rotate(${d * 17 % 360}deg) scale(${0.9 + (d % 3) * 0.1});"></div>` : '';
     calendarHTML += `<div class="calendar-day ${isToday ? 'today' : ''}">${bloomStyle}${d}</div>`;
@@ -1408,16 +1412,21 @@ function renderProgress() {
   return `
     <div class="view" id="view-progress">
       <div class="progress-wash"></div>
-      <div class="progress-header">
-        <h2>Progress</h2>
-        <p class="caption">Your journey, one session at a time.</p>
+      <div class="progress-hero">
+        <div class="progress-hero-copy">
+          <p class="label">Your Journey</p>
+          <h2>Progress in bloom</h2>
+          <p class="caption">Movement, breath, and quiet time, all growing together.</p>
+        </div>
       </div>
       <div class="summary-card">
         <h3>Summary</h3>
-        <div class="summary-stat"><span>Total Sessions</span><span>${total}</span></div>
+        <div class="summary-stat"><span>Tai Chi Sessions</span><span>${total}</span></div>
         <div class="summary-stat"><span>Modules Complete</span><span>${completedModules}/6</span></div>
         <div class="summary-stat"><span>Current Module</span><span>Week ${getActiveModule()}</span></div>
         <div class="summary-stat"><span>Breathing Sessions</span><span>${state.breathingCompletions || 0}</span></div>
+        <div class="summary-stat"><span>Meditation Sessions</span><span>${state.meditationCompletions}</span></div>
+        <div class="summary-stat"><span>Quiet Minutes</span><span>${state.meditationMinutes}</span></div>
       </div>
       <p class="label mb-16">${monthNames[currentMonth]} ${currentYear}</p>
       <div class="calendar-grid">
@@ -1444,7 +1453,7 @@ function renderProgress() {
         ${REWARDS.map(r => {
           const unlocked = r.condition(state);
           return `
-            <div class="reward-item ${unlocked ? 'unlocked' : 'locked'}">
+            <div class="reward-item ${r.type === 'meditation' ? 'meditation-reward' : ''} ${unlocked ? 'unlocked' : 'locked'}">
               <div class="reward-icon">${r.icon}</div>
               <div class="reward-name">${r.name}</div>
               <div class="reward-desc">${r.desc}</div>
@@ -1623,7 +1632,7 @@ function renderMeditation() {
                 <button onclick="adjustMeditationTime(${index}, 5)" aria-label="Lengthen ${track.title}">+</button>
               </div>
             </div>
-            <button class="meditation-placeholder" disabled>Music will appear here</button>
+            <button class="meditation-placeholder" onclick="completeMeditation(${index})">Log ${state.meditationDurations[index]} minutes of quiet time</button>
           </section>
         `).join('')}
       </div>
@@ -1635,6 +1644,16 @@ function adjustMeditationTime(index, change) {
   state.meditationDurations[index] = Math.max(5, Math.min(60, state.meditationDurations[index] + change));
   saveState();
   render();
+}
+
+function completeMeditation(index) {
+  const minutes = state.meditationDurations[index];
+  state.meditationCompletions += 1;
+  state.meditationMinutes += minutes;
+  const today = formatDate(new Date());
+  if (!state.meditationCalendar.includes(today)) state.meditationCalendar.push(today);
+  saveState();
+  navigate('progress');
 }
 
 // ===================== ACTIONS =====================
