@@ -290,22 +290,9 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .meditation-audio {
   width: 100%;
   height: 48px;
-  margin-top: 12px;
+  margin-top: 16px;
   accent-color: var(--watercolor-green);
 }
-.meditation-play {
-  width: 100%; min-height: 54px; margin-top: 16px; border: 0; border-radius: 27px;
-  background: var(--watercolor-green); color: #18322b;
-  font-family: var(--font-body); font-size: 17px; font-weight: 700; cursor: pointer;
-  box-shadow: 0 5px 14px rgba(81, 121, 101, 0.2);
-  transition: transform var(--transition), background var(--transition);
-}
-.meditation-play:hover { background: #a6c1af; }
-.meditation-play:active { transform: scale(0.98); }
-.meditation-audio-status {
-  min-height: 22px; margin: 8px 4px 0; color: var(--mauve); font-size: 14px;
-}
-.meditation-audio-status.error { color: #9c3c3c; }
 .program-header { margin-bottom: 24px; }
 .program-nudge {
   font-size: 16px;
@@ -1657,7 +1644,7 @@ function renderPlayer() {
         <button class="player-exit" onclick="exitPlayer()">&larr; Exit</button>
         <div class="player-move-counter" id="player-counter"></div>
         <div class="player-illustration">
-          <video class="player-video" id="player-video" muted loop autoplay playsinline></video>
+          <video class="player-video" id="player-video" controls loop autoplay playsinline></video>
           <img class="player-photo" id="player-photo" alt="">
           <span class="player-illustration-placeholder" id="player-ill-placeholder">&#10022;</span>
         </div>
@@ -1790,9 +1777,7 @@ function renderMeditation() {
                 <button onclick="adjustMeditationTime(${index}, 5)" aria-label="Lengthen ${track.title}">+</button>
               </div>
             </div>
-            <button class="meditation-play" id="meditation-play-${index}" onclick="toggleMeditationAudio(${index})">&#9654; Play meditation music</button>
-            <p class="meditation-audio-status" id="meditation-audio-status-${index}" aria-live="polite">Tap Play to begin.</p>
-            <audio class="meditation-audio" id="meditation-audio-${index}" controls loop preload="metadata" src="audio/${track.file}" onplaying="setMeditationAudioStatus(${index}, 'Playing')" onpause="setMeditationAudioStatus(${index}, 'Paused')" onerror="setMeditationAudioStatus(${index}, 'Audio could not load. Check the internet connection and try again.', true)">Your browser does not support audio playback.</audio>
+            <audio class="meditation-audio" controls loop preload="metadata" src="audio/${track.file}">Your browser does not support audio playback.</audio>
             <button class="meditation-placeholder" onclick="completeMeditation(${index})">Log ${state.meditationDurations[index]} minutes of quiet time</button>
           </section>
         `).join('')}
@@ -1805,35 +1790,6 @@ function adjustMeditationTime(index, change) {
   state.meditationDurations[index] = Math.max(5, Math.min(60, state.meditationDurations[index] + change));
   saveState();
   render();
-}
-
-function setMeditationAudioStatus(index, message, isError = false) {
-  const status = document.getElementById(`meditation-audio-status-${index}`);
-  const button = document.getElementById(`meditation-play-${index}`);
-  const audio = document.getElementById(`meditation-audio-${index}`);
-  if (status) {
-    status.textContent = message;
-    status.classList.toggle('error', isError);
-  }
-  if (button && audio) button.innerHTML = audio.paused ? '&#9654; Play meditation music' : '&#10074;&#10074; Pause meditation music';
-}
-
-function toggleMeditationAudio(index) {
-  const audio = document.getElementById(`meditation-audio-${index}`);
-  if (!audio) return;
-
-  if (!audio.paused) {
-    audio.pause();
-    return;
-  }
-
-  document.querySelectorAll('.meditation-audio').forEach(otherAudio => {
-    if (otherAudio !== audio) otherAudio.pause();
-  });
-  setMeditationAudioStatus(index, 'Starting music...');
-  audio.play().catch(() => {
-    setMeditationAudioStatus(index, 'Audio could not start. Check the sound volume and tap Play again.', true);
-  });
 }
 
 function completeMeditation(index) {
