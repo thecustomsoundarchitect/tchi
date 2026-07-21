@@ -214,6 +214,34 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .home-greeting { margin-top: 48px; margin-bottom: 8px; }
 .home-subtext { margin-bottom: 48px; color: #000; }
 .home-actions { display: flex; flex-direction: column; gap: 16px; }
+.home-complete-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  margin: 24px 0 28px;
+  overflow: hidden;
+  border: 1px solid rgba(54, 92, 67, 0.24);
+  border-radius: 22px 10px 22px 10px;
+  background: linear-gradient(135deg, rgba(218, 233, 222, 0.96), rgba(143, 174, 152, 0.5));
+  box-shadow: 0 8px 22px rgba(54, 92, 67, 0.12);
+}
+.home-complete-check {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #365c43;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+.home-complete-title { font-size: 19px; font-weight: 600; color: #1f3c29; margin-bottom: 2px; }
+.home-complete-detail { font-size: 16px; line-height: 1.4; color: #365c43; }
 .home-breathing-btn { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; }
 .home-breathing-daub {
   width: 20px;
@@ -262,9 +290,22 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .meditation-audio {
   width: 100%;
   height: 48px;
-  margin-top: 16px;
+  margin-top: 12px;
   accent-color: var(--watercolor-green);
 }
+.meditation-play {
+  width: 100%; min-height: 54px; margin-top: 16px; border: 0; border-radius: 27px;
+  background: var(--watercolor-green); color: #18322b;
+  font-family: var(--font-body); font-size: 17px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 5px 14px rgba(81, 121, 101, 0.2);
+  transition: transform var(--transition), background var(--transition);
+}
+.meditation-play:hover { background: #a6c1af; }
+.meditation-play:active { transform: scale(0.98); }
+.meditation-audio-status {
+  min-height: 22px; margin: 8px 4px 0; color: var(--mauve); font-size: 14px;
+}
+.meditation-audio-status.error { color: #9c3c3c; }
 .program-header { margin-bottom: 24px; }
 .program-nudge {
   font-size: 16px;
@@ -1125,7 +1166,7 @@ const MODULES = [
 ];
 
 const MOVES = [
-  { id: 1, moduleId: 1, name: "Seated Mountain Pose", cue: "Sit tall, feet flat, hands on thighs. Feel your spine lengthen.", duration: 60, purpose: "Builds posture awareness", video: "" },
+  { id: 1, moduleId: 1, name: "Seated Mountain Pose", cue: "Sit tall, feet flat, hands on thighs. Feel your spine lengthen.", duration: 60, purpose: "Builds posture awareness", video: "w1-01" },
   { id: 2, moduleId: 1, name: "Neck Rolls and Stretches", cue: "Slowly roll your head in a gentle circle. Keep shoulders relaxed.", duration: 60, purpose: "Releases neck tension", video: "" },
   { id: 3, moduleId: 1, name: "Shoulder Circles", cue: "Lift shoulders up, back, down, and around. Reverse direction slowly.", duration: 60, purpose: "Improves shoulder mobility", video: "" },
   { id: 4, moduleId: 1, name: "Ankle and Foot Circles", cue: "Lift one foot slightly, circle the ankle. Switch feet.", duration: 60, purpose: "Warms up lower joints", video: "" },
@@ -1301,7 +1342,10 @@ function getModuleProgressMessage(moduleId, progress) {
 }
 
 function formatDate(date) {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 // Photo/video file id for a move: w<module>-<position in module>, e.g. w1-01
@@ -1365,12 +1409,23 @@ function render() {
 function renderHome() {
   const active = getActiveModule();
   const mod = MODULES.find(m => m.id === active);
+  const completedToday = state.calendar.includes(formatDate(new Date()));
+  const sessionTotal = totalSessions(state);
   return `
     <div class="view" id="view-home">
       <h1 class="home-greeting">Hello, Barb.</h1>
       <p class="home-subtext label">One day at a time.</p>
+      ${completedToday ? `
+        <div class="home-complete-card" role="status" aria-label="Today's workout is complete">
+          <div class="home-complete-check">✓</div>
+          <div>
+            <div class="home-complete-title">Workout complete today</div>
+            <div class="home-complete-detail">Your progress is saved. ${sessionTotal} Tai Chi session${sessionTotal === 1 ? '' : 's'} completed.</div>
+          </div>
+        </div>
+      ` : ''}
       <div class="home-actions watercolor-actions">
-        <button class="btn btn-primary" onclick="startWorkout()">Start Workout</button>
+        <button class="btn btn-primary" onclick="startWorkout()">${completedToday ? 'Practice Again' : 'Start Workout'}</button>
         <button class="btn btn-secondary home-breathing-btn" onclick="navigate('breathing')">
           <span class="home-breathing-daub"></span>
           Breathing exercise
@@ -1735,7 +1790,9 @@ function renderMeditation() {
                 <button onclick="adjustMeditationTime(${index}, 5)" aria-label="Lengthen ${track.title}">+</button>
               </div>
             </div>
-            <audio class="meditation-audio" controls loop preload="metadata" src="audio/${track.file}">Your browser does not support audio playback.</audio>
+            <button class="meditation-play" id="meditation-play-${index}" onclick="toggleMeditationAudio(${index})">&#9654; Play meditation music</button>
+            <p class="meditation-audio-status" id="meditation-audio-status-${index}" aria-live="polite">Tap Play to begin.</p>
+            <audio class="meditation-audio" id="meditation-audio-${index}" controls loop preload="metadata" src="audio/${track.file}" onplaying="setMeditationAudioStatus(${index}, 'Playing')" onpause="setMeditationAudioStatus(${index}, 'Paused')" onerror="setMeditationAudioStatus(${index}, 'Audio could not load. Check the internet connection and try again.', true)">Your browser does not support audio playback.</audio>
             <button class="meditation-placeholder" onclick="completeMeditation(${index})">Log ${state.meditationDurations[index]} minutes of quiet time</button>
           </section>
         `).join('')}
@@ -1748,6 +1805,35 @@ function adjustMeditationTime(index, change) {
   state.meditationDurations[index] = Math.max(5, Math.min(60, state.meditationDurations[index] + change));
   saveState();
   render();
+}
+
+function setMeditationAudioStatus(index, message, isError = false) {
+  const status = document.getElementById(`meditation-audio-status-${index}`);
+  const button = document.getElementById(`meditation-play-${index}`);
+  const audio = document.getElementById(`meditation-audio-${index}`);
+  if (status) {
+    status.textContent = message;
+    status.classList.toggle('error', isError);
+  }
+  if (button && audio) button.innerHTML = audio.paused ? '&#9654; Play meditation music' : '&#10074;&#10074; Pause meditation music';
+}
+
+function toggleMeditationAudio(index) {
+  const audio = document.getElementById(`meditation-audio-${index}`);
+  if (!audio) return;
+
+  if (!audio.paused) {
+    audio.pause();
+    return;
+  }
+
+  document.querySelectorAll('.meditation-audio').forEach(otherAudio => {
+    if (otherAudio !== audio) otherAudio.pause();
+  });
+  setMeditationAudioStatus(index, 'Starting music...');
+  audio.play().catch(() => {
+    setMeditationAudioStatus(index, 'Audio could not start. Check the sound volume and tap Play again.', true);
+  });
 }
 
 function completeMeditation(index) {
