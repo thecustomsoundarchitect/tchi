@@ -1284,6 +1284,15 @@ if (!state.barbsFirstWorkoutCredited) {
   saveState();
 }
 
+const BARB_SECOND_WORKOUT_DATE = "2026-07-20";
+if (!state.barbsSecondWorkoutCredited) {
+  state.moduleProgress[1] = Math.max(state.moduleProgress[1] || 0, 2);
+  if (!state.calendar.includes(BARB_SECOND_WORKOUT_DATE)) state.calendar.push(BARB_SECOND_WORKOUT_DATE);
+  state.barbsSecondWorkoutCredited = true;
+  checkUnlocks();
+  saveState();
+}
+
 function saveState() {
   localStorage.setItem("taichi_barb_state_v2", JSON.stringify(state));
 }
