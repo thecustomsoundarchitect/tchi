@@ -1403,7 +1403,6 @@ const PLAYER_WASHES = [
 // ===================== STATE =====================
 const LEGACY_STORAGE_KEY = "taichi_barb_state_v2";
 const USER_STORAGE_PREFIX = "taichi_user_state_v3_";
-const MIGRATION_OWNER_KEY = "taichi_legacy_migration_owner";
 let activeUserId = null;
 let currentUserName = "there";
 let currentUserEmail = "";
@@ -1461,7 +1460,22 @@ function normalizeState(value) {
   return normalized;
 }
 
-let state = normalizeState(readStoredState(LEGACY_STORAGE_KEY));
+let state = createDefaultState();
+
+function removeLegacyStartingCredits(value) {
+  const corrected = normalizeState(value);
+  let automaticCredits = 0;
+  if (corrected.barbsFirstWorkoutCredited) automaticCredits += 1;
+  if (corrected.barbsSecondWorkoutCredited) automaticCredits += 1;
+  if (automaticCredits === 0) return corrected;
+
+  corrected.moduleProgress[1] = Math.max(0, (corrected.moduleProgress[1] || 0) - automaticCredits);
+  corrected.calendar = corrected.calendar.filter(date => date !== "2026-07-19" && date !== "2026-07-20");
+  delete corrected.barbsFirstWorkoutCredited;
+  delete corrected.barbsSecondWorkoutCredited;
+  corrected.lastModified = Date.now();
+  return corrected;
+}
 
 function activateUserProgress(userId, remoteState, identity = {}) {
   activeUserId = userId;
@@ -1481,17 +1495,10 @@ function activateUserProgress(userId, remoteState, identity = {}) {
   } else if (localUserState) {
     selected = normalizeState(localUserState);
   } else {
-    const migrationOwner = localStorage.getItem(MIGRATION_OWNER_KEY);
-    const legacyState = readStoredState(LEGACY_STORAGE_KEY);
-    if (!migrationOwner && legacyState) {
-      selected = normalizeState(legacyState);
-      localStorage.setItem(MIGRATION_OWNER_KEY, userId);
-    } else {
-      selected = createDefaultState();
-    }
+    selected = createDefaultState();
   }
 
-  state = normalizeState(selected);
+  state = removeLegacyStartingCredits(selected);
   checkUnlocks();
   localStorage.setItem(userStorageKey, JSON.stringify(state));
   render();
