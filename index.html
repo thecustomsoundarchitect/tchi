@@ -1653,28 +1653,18 @@ function renderPlayer() {
         <button class="player-exit" onclick="exitPlayer()">&larr; Exit</button>
         <div class="player-move-counter" id="player-counter"></div>
         <div class="player-illustration">
-          <video class="player-video" id="player-video" controls loop autoplay playsinline></video>
+          <video class="player-video" id="player-video" controls autoplay playsinline></video>
           <img class="player-photo" id="player-photo" alt="">
           <span class="player-illustration-placeholder" id="player-ill-placeholder">&#10022;</span>
         </div>
         <div class="player-move-name" id="player-move-name"></div>
         <div class="player-cue" id="player-cue"></div>
         <div class="player-controls">
-          <div class="timer-ring-container">
-            <svg class="timer-ring-svg" viewBox="0 0 120 120">
-              <circle class="timer-ring-bg" cx="60" cy="60" r="54"/>
-              <circle class="timer-ring-fill" id="timer-ring-fill" cx="60" cy="60" r="54"
-                stroke-dasharray="339.292" stroke-dashoffset="0"/>
-            </svg>
-            <div class="timer-text" id="player-timer"></div>
-          </div>
           <button class="player-pause-btn" id="player-pause-btn" onclick="togglePause()" aria-label="Pause workout">
             <svg id="pause-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
             <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </button>
-          <button class="btn btn-primary player-next-btn" id="player-next-btn" onclick="continuePlayer()" hidden>Next Move</button>
         </div>
-        <div class="player-status" id="player-status" aria-live="polite"></div>
       </div>
     </div>
   `;
@@ -1883,7 +1873,12 @@ function updatePlayerPhoto(move) {
     photo.removeAttribute('src');
     video.style.display = 'none';
     placeholder.style.display = '';
-    video.oncanplay = () => { video.style.display = 'block'; placeholder.style.display = 'none'; };
+    video.oncanplay = () => {
+      video.style.display = 'block';
+      placeholder.style.display = 'none';
+      video.play().catch(() => {});
+    };
+    video.onended = () => advancePlayer();
     video.onerror = () => { video.style.display = 'none'; placeholder.style.display = ''; };
     video.src = `video/${move.video}.mp4`;
     return;
@@ -1904,36 +1899,17 @@ function updatePlayerPhoto(move) {
 }
 
 function tickPlayer() {
-  if (playerState.isPaused) return;
+  if (playerState.isPaused || playerState.moves[playerState.index].video) return;
   playerState.timeRemaining--;
   if (playerState.timeRemaining <= 0) {
-    pauseBetweenMoves();
+    advancePlayer();
   } else {
     updatePlayerDisplay();
   }
 }
 
-function pauseBetweenMoves() {
-  playerState.timeRemaining = 0;
-  playerState.isPaused = true;
-  playerState.isBetweenMoves = true;
-  updatePlayerDisplay();
-
-  const video = document.getElementById('player-video');
-  if (video) video.pause();
-
-  const isLastMove = playerState.index >= playerState.moves.length - 1;
-  const pauseButton = document.getElementById('player-pause-btn');
-  const nextButton = document.getElementById('player-next-btn');
-  const status = document.getElementById('player-status');
-  pauseButton.hidden = true;
-  nextButton.hidden = false;
-  nextButton.textContent = isLastMove ? 'Finish Workout' : 'Next Move';
-  status.textContent = isLastMove ? 'Workout complete when you are ready.' : 'Take a breath. Start the next move when you are ready.';
-}
-
-function continuePlayer() {
-  if (!playerState || !playerState.isBetweenMoves) return;
+function advancePlayer() {
+  if (!playerState) return;
   if (playerState.index >= playerState.moves.length - 1) {
     finishWorkout();
     return;
@@ -1943,11 +1919,6 @@ function continuePlayer() {
   playerState.timeRemaining = playerState.moves[playerState.index].duration;
   playerState.totalTime = playerState.timeRemaining;
   playerState.isPaused = false;
-  playerState.isBetweenMoves = false;
-
-  document.getElementById('player-pause-btn').hidden = false;
-  document.getElementById('player-next-btn').hidden = true;
-  document.getElementById('player-status').textContent = '';
   updatePlayerDisplay();
   updatePlayerWash();
 }
@@ -1957,12 +1928,7 @@ function updatePlayerDisplay() {
   updatePlayerPhoto(move);
   document.getElementById('player-move-name').textContent = move.name;
   document.getElementById('player-cue').textContent = move.cue;
-  const mins = Math.floor(playerState.timeRemaining / 60);
-  const secs = playerState.timeRemaining % 60;
-  document.getElementById('player-timer').textContent = `${mins}:${String(secs).padStart(2, '0')}`;
   document.getElementById('player-counter').textContent = `${playerState.index + 1} / ${playerState.moves.length}`;
-  const offset = RING_CIRCUMFERENCE - (playerState.timeRemaining / playerState.totalTime) * RING_CIRCUMFERENCE;
-  document.getElementById('timer-ring-fill').style.strokeDashoffset = offset;
 }
 
 function togglePause() {
