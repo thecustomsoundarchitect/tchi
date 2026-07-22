@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Tai Chi for Barb</title>
+<title>Tai Chi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -1093,10 +1093,136 @@ body[data-view="player"] #view-player {
   filter: url(#wc-core);
 }
 .watercolor-actions .btn:hover { background: none; opacity: 0.9; }
+
+/* ===================== ACCOUNT & CLOUD SYNC ===================== */
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background:
+    linear-gradient(160deg, rgba(255, 250, 251, 0.84), rgba(203, 192, 208, 0.7)),
+    url("img/home-lotus-background.png") center / cover;
+}
+.auth-card {
+  width: min(100%, 430px);
+  padding: 34px 28px 28px;
+  border: 1px solid rgba(114, 85, 104, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 55px rgba(61, 43, 58, 0.18);
+}
+.auth-card h1 { margin: 5px 0 10px; }
+.auth-intro { margin-bottom: 24px; color: var(--mauve); }
+.auth-field { display: block; margin-bottom: 16px; }
+.auth-field span { display: block; margin-bottom: 7px; font-size: 16px; font-weight: 600; }
+.auth-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(114, 85, 104, 0.34);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--aubergine);
+  font: 18px var(--font-body);
+}
+.auth-input:focus { outline: 3px solid rgba(201, 169, 178, 0.35); border-color: var(--mauve); }
+.auth-submit { margin-top: 8px; }
+.auth-submit:disabled { cursor: wait; opacity: 0.65; }
+.auth-link {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--mauve);
+  font: 600 16px var(--font-body);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.auth-message { min-height: 24px; margin-top: 14px; color: #8b2942; font-size: 15px; line-height: 1.45; }
+.auth-message.success { color: #365c43; }
+body.auth-pending #app,
+body.auth-pending #bottom-nav,
+body.auth-pending #page-bg { visibility: hidden; }
+.account-card {
+  margin-top: 34px;
+  padding: 18px;
+  border: 1px solid rgba(114, 85, 104, 0.16);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.72);
+}
+.account-email { margin-top: 4px; overflow-wrap: anywhere; font-size: 16px; }
+.sync-status { margin-top: 5px; color: #365c43; font-size: 15px; }
+.account-signout {
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--mauve);
+  font: 600 16px var(--font-body);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.admin-header { margin-bottom: 24px; }
+.admin-notice {
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(176, 190, 181, 0.22);
+  color: #294333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.admin-user-card {
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid rgba(114, 85, 104, 0.16);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 7px 20px rgba(61, 43, 58, 0.06);
+}
+.admin-user-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.admin-user-name { font: 600 23px var(--font-display); }
+.admin-user-email { margin-top: 2px; color: var(--mauve); font-size: 14px; overflow-wrap: anywhere; }
+.admin-user-summary { margin: 14px 0; font-size: 15px; line-height: 1.55; }
+.admin-module-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px 32px 42px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid rgba(114, 85, 104, 0.1);
+}
+.admin-module-name { min-width: 0; font-size: 14px; }
+.admin-module-count { text-align: center; font-weight: 600; }
+.admin-stepper {
+  width: 42px;
+  height: 38px;
+  border: 1px solid rgba(114, 85, 104, 0.28);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--aubergine);
+  font: 600 22px var(--font-body);
+  cursor: pointer;
+}
+.admin-reset {
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+  color: #8b2942;
+  font: 600 15px var(--font-body);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.admin-refresh { margin-bottom: 18px; }
 </style>
 <base target="_blank">
 </head>
-<body>
+<body class="auth-pending">
 <div class="home-wash" id="page-bg"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
@@ -1111,6 +1237,31 @@ body[data-view="player"] #view-player {
     </filter>
   </defs>
 </svg>
+<div class="auth-gate" id="auth-gate">
+  <section class="auth-card" aria-labelledby="auth-title">
+    <p class="label">Tai Chi</p>
+    <h1 id="auth-title">Welcome back</h1>
+    <p class="auth-intro" id="auth-intro">Sign in to continue and keep your progress safely synced.</p>
+    <form id="auth-form">
+      <label class="auth-field" id="auth-name-field" hidden>
+        <span>First name</span>
+        <input class="auth-input" id="auth-name" name="name" type="text" autocomplete="given-name" maxlength="40">
+      </label>
+      <label class="auth-field">
+        <span>Email</span>
+        <input class="auth-input" id="auth-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+      </label>
+      <label class="auth-field">
+        <span>Password</span>
+        <input class="auth-input" id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required>
+      </label>
+      <button class="btn btn-primary auth-submit" id="auth-submit" type="submit">Sign in</button>
+      <button class="auth-link" id="auth-switch" type="button">New here? Create an account</button>
+      <button class="auth-link" id="auth-reset" type="button">Forgot password?</button>
+      <p class="auth-message" id="auth-message" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</div>
 <div id="app"></div>
 <div class="video-modal" id="video-modal" onclick="closeVideo()">
   <div class="video-box" onclick="event.stopPropagation()">
@@ -1139,7 +1290,13 @@ body[data-view="player"] #view-player {
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     Progress
   </button>
+  <button class="nav-item" id="admin-nav" data-view="admin" onclick="navigate('admin')" hidden>
+    <div class="nav-daub"></div>
+    <span class="material-symbols-rounded" aria-hidden="true">admin_panel_settings</span>
+    Admin
+  </button>
 </nav>
+<script type="module" src="firebase-sync.js"></script>
 <script>
 
 // ===================== DATA =====================
@@ -1244,11 +1401,20 @@ const PLAYER_WASHES = [
 ];
 
 // ===================== STATE =====================
-function loadState() {
-  try {
-    const raw = localStorage.getItem("taichi_barb_state_v2");
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
+const LEGACY_STORAGE_KEY = "taichi_barb_state_v2";
+const USER_STORAGE_PREFIX = "taichi_user_state_v3_";
+const MIGRATION_OWNER_KEY = "taichi_legacy_migration_owner";
+let activeUserId = null;
+let currentUserName = "there";
+let currentUserEmail = "";
+let cloudSyncLabel = "Saved on this device";
+let currentUserIsAdmin = false;
+let adminUsers = [];
+let adminUsersLoaded = false;
+let adminUsersLoading = false;
+let adminUsersError = "";
+
+function createDefaultState() {
   return {
     moduleProgress: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
     moduleUnlocked: { 1: true, 2: false, 3: false, 4: false, 5: false, 6: false },
@@ -1261,40 +1427,166 @@ function loadState() {
     meditationCalendar: [],
     breathingCompletions: 0,
     currentView: "home",
-    activeModule: 1
+    activeModule: 1,
+    lastModified: 0
   };
 }
 
-let state = loadState();
-if (!Array.isArray(state.calendar)) state.calendar = [];
-if (!Array.isArray(state.meditationDurations)) {
-  state.meditationDurations = MEDITATION_TRACKS.map(() => 30);
+function readStoredState(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
 }
-state.meditationDurations = MEDITATION_TRACKS.map((_, index) => state.meditationDurations[index] || 30);
-state.meditationCompletions = state.meditationCompletions || 0;
-state.meditationMinutes = state.meditationMinutes || 0;
-if (!Array.isArray(state.meditationCalendar)) state.meditationCalendar = [];
 
-const BARB_FIRST_WORKOUT_DATE = "2026-07-19";
-if (!state.barbsFirstWorkoutCredited) {
-  state.moduleProgress[1] = Math.max(state.moduleProgress[1] || 0, 1);
-  if (!state.calendar.includes(BARB_FIRST_WORKOUT_DATE)) state.calendar.push(BARB_FIRST_WORKOUT_DATE);
-  state.barbsFirstWorkoutCredited = true;
+function normalizeState(value) {
+  const defaults = createDefaultState();
+  const next = value && typeof value === "object" ? value : {};
+  const normalized = { ...defaults, ...next };
+  normalized.moduleProgress = { ...defaults.moduleProgress, ...(next.moduleProgress || {}) };
+  normalized.moduleUnlocked = { ...defaults.moduleUnlocked, ...(next.moduleUnlocked || {}) };
+  normalized.breathingSettings = { ...defaults.breathingSettings, ...(next.breathingSettings || {}) };
+  normalized.calendar = Array.isArray(next.calendar) ? next.calendar : [];
+  normalized.feedback = Array.isArray(next.feedback) ? next.feedback : [];
+  normalized.meditationCalendar = Array.isArray(next.meditationCalendar) ? next.meditationCalendar : [];
+  normalized.meditationDurations = MEDITATION_TRACKS.map((_, index) =>
+    Array.isArray(next.meditationDurations) ? (next.meditationDurations[index] || 30) : 30
+  );
+  normalized.meditationCompletions = Number(next.meditationCompletions) || 0;
+  normalized.meditationMinutes = Number(next.meditationMinutes) || 0;
+  normalized.breathingCompletions = Number(next.breathingCompletions) || 0;
+  normalized.lastModified = Number(next.lastModified) || 0;
+  return normalized;
+}
+
+let state = normalizeState(readStoredState(LEGACY_STORAGE_KEY));
+
+function activateUserProgress(userId, remoteState, identity = {}) {
+  activeUserId = userId;
+  currentUserName = identity.displayName || identity.email?.split("@")[0] || "there";
+  currentUserEmail = identity.email || "";
+
+  const userStorageKey = USER_STORAGE_PREFIX + userId;
+  const localUserState = readStoredState(userStorageKey);
+  const remote = remoteState ? normalizeState(remoteState) : null;
+  let selected = null;
+
+  if (remote && localUserState) {
+    const local = normalizeState(localUserState);
+    selected = local.lastModified > remote.lastModified ? local : remote;
+  } else if (remote) {
+    selected = remote;
+  } else if (localUserState) {
+    selected = normalizeState(localUserState);
+  } else {
+    const migrationOwner = localStorage.getItem(MIGRATION_OWNER_KEY);
+    const legacyState = readStoredState(LEGACY_STORAGE_KEY);
+    if (!migrationOwner && legacyState) {
+      selected = normalizeState(legacyState);
+      localStorage.setItem(MIGRATION_OWNER_KEY, userId);
+    } else {
+      selected = createDefaultState();
+    }
+  }
+
+  state = normalizeState(selected);
   checkUnlocks();
-  saveState();
+  localStorage.setItem(userStorageKey, JSON.stringify(state));
+  render();
+  return JSON.parse(JSON.stringify(state));
 }
 
-const BARB_SECOND_WORKOUT_DATE = "2026-07-20";
-if (!state.barbsSecondWorkoutCredited) {
-  state.moduleProgress[1] = Math.max(state.moduleProgress[1] || 0, 2);
-  if (!state.calendar.includes(BARB_SECOND_WORKOUT_DATE)) state.calendar.push(BARB_SECOND_WORKOUT_DATE);
-  state.barbsSecondWorkoutCredited = true;
+function saveState(syncToCloud = true) {
+  if (syncToCloud) state.lastModified = Date.now();
+  const storageKey = activeUserId ? USER_STORAGE_PREFIX + activeUserId : LEGACY_STORAGE_KEY;
+  localStorage.setItem(storageKey, JSON.stringify(state));
+  if (syncToCloud && activeUserId && window.cloudProgress) window.cloudProgress.save(state);
+}
+
+function setSignedInIdentity(identity = {}) {
+  currentUserName = identity.displayName || identity.email?.split("@")[0] || "there";
+  currentUserEmail = identity.email || "";
+  render();
+}
+
+function setCloudSyncStatus(message) {
+  cloudSyncLabel = message;
+  const syncElement = document.getElementById("sync-status");
+  if (syncElement) syncElement.textContent = message;
+}
+
+function getCurrentProgressModified() {
+  return Number(state.lastModified) || 0;
+}
+
+function applyRemoteProgress(remoteState) {
+  const remote = normalizeState(remoteState);
+  if (!activeUserId || remote.lastModified <= getCurrentProgressModified()) return false;
+  state = remote;
   checkUnlocks();
-  saveState();
+  localStorage.setItem(USER_STORAGE_PREFIX + activeUserId, JSON.stringify(state));
+  render();
+  return true;
 }
 
-function saveState() {
-  localStorage.setItem("taichi_barb_state_v2", JSON.stringify(state));
+function setAdminAccess(enabled) {
+  currentUserIsAdmin = Boolean(enabled);
+  const adminNav = document.getElementById("admin-nav");
+  if (adminNav) adminNav.hidden = !currentUserIsAdmin;
+  if (!currentUserIsAdmin && state.currentView === "admin") state.currentView = "progress";
+  render();
+}
+
+async function refreshAdminUsers() {
+  if (!currentUserIsAdmin || adminUsersLoading || !window.cloudProgress?.loadUsers) return;
+  adminUsersLoading = true;
+  adminUsersError = "";
+  render();
+  try {
+    adminUsers = await window.cloudProgress.loadUsers();
+    adminUsersLoaded = true;
+  } catch (error) {
+    console.error("Unable to load members", error);
+    adminUsersError = "Member progress could not be loaded. Please try again.";
+  } finally {
+    adminUsersLoading = false;
+    render();
+  }
+}
+
+function recalculateUserUnlocks(progressState) {
+  progressState.moduleUnlocked = progressState.moduleUnlocked || {};
+  progressState.moduleUnlocked[1] = true;
+  for (let moduleId = 2; moduleId <= MODULES.length; moduleId++) {
+    progressState.moduleUnlocked[moduleId] = (progressState.moduleProgress[moduleId - 1] || 0) >= SESSIONS_PER_WEEK;
+  }
+  progressState.lastModified = Date.now();
+  return progressState;
+}
+
+async function adminAdjustModule(userId, moduleId, change) {
+  if (!currentUserIsAdmin || !window.cloudProgress?.updateUserState) return;
+  const member = adminUsers.find(user => user.id === userId);
+  if (!member) return;
+  const nextState = normalizeState(member.state);
+  nextState.moduleProgress[moduleId] = Math.max(0, (nextState.moduleProgress[moduleId] || 0) + change);
+  recalculateUserUnlocks(nextState);
+  await window.cloudProgress.updateUserState(userId, nextState);
+  adminUsersLoaded = false;
+  await refreshAdminUsers();
+}
+
+async function adminResetUser(userId, userName) {
+  if (!currentUserIsAdmin || !window.cloudProgress?.updateUserState) return;
+  const confirmed = window.confirm(`Reset all progress for ${userName}? This cannot be undone.`);
+  if (!confirmed) return;
+  const resetState = createDefaultState();
+  resetState.lastModified = Date.now();
+  await window.cloudProgress.updateUserState(userId, resetState);
+  adminUsersLoaded = false;
+  await refreshAdminUsers();
 }
 
 function totalSessions(s) {
@@ -1344,6 +1636,16 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+function escapeHTML(value) {
+  return String(value || "").replace(/[&<>'"]/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  })[character]);
+}
+
 // Photo/video file id for a move: w<module>-<position in module>, e.g. w1-01
 // Matches the filenames in IMAGES_NEEDED.md and VIDEOS_NEEDED.md
 function moveFileId(move) {
@@ -1364,7 +1666,7 @@ function photoSlot(move, letter, caption) {
 // ===================== NAVIGATION =====================
 function navigate(view) {
   state.currentView = view;
-  saveState();
+  saveState(false);
   render();
   window.scrollTo(0, 0);
 }
@@ -1389,6 +1691,7 @@ function render() {
   else if (view === "program") app.innerHTML = renderProgram();
   else if (view === "practice") app.innerHTML = renderPractice();
   else if (view === "progress") app.innerHTML = renderProgress();
+  else if (view === "admin" && currentUserIsAdmin) app.innerHTML = renderAdmin();
   else if (view === "preview") app.innerHTML = renderPreview();
   else if (view === "player") app.innerHTML = renderPlayer();
   else if (view === "feedback") app.innerHTML = renderFeedback();
@@ -1400,6 +1703,7 @@ function render() {
 
   if (view === "player") initPlayer();
   if (view === "breathing") initBreathing();
+  if (view === "admin" && currentUserIsAdmin && !adminUsersLoaded && !adminUsersLoading) refreshAdminUsers();
 }
 
 function renderHome() {
@@ -1409,7 +1713,7 @@ function renderHome() {
   const sessionTotal = totalSessions(state);
   return `
     <div class="view" id="view-home">
-      <h1 class="home-greeting">Hello, Barb.</h1>
+      <h1 class="home-greeting">Hello, ${escapeHTML(currentUserName)}.</h1>
       <p class="home-subtext label">One day at a time.</p>
       ${completedToday ? `
         <div class="home-complete-card" role="status" aria-label="Today's workout is complete">
@@ -1607,8 +1911,63 @@ function renderProgress() {
           `;
         }).join('')}
       </div>
+      <section class="account-card" aria-label="Account and sync status">
+        <p class="label">Signed in</p>
+        <p class="account-email">${escapeHTML(currentUserEmail)}</p>
+        <p class="sync-status" id="sync-status">${escapeHTML(cloudSyncLabel)}</p>
+        <button class="account-signout" type="button" onclick="window.cloudProgress?.signOut()">Sign out</button>
+      </section>
     </div>
   `;
+}
+
+function renderAdmin() {
+  const content = adminUsersLoading
+    ? '<p class="caption">Loading member progress…</p>'
+    : adminUsersError
+      ? `<p class="auth-message">${escapeHTML(adminUsersError)}</p>`
+      : adminUsers.length === 0
+        ? '<p class="caption">No registered members yet.</p>'
+        : adminUsers.map(member => {
+            const memberState = normalizeState(member.state);
+            const total = totalSessions(memberState);
+            const lastActive = memberState.lastModified
+              ? new Date(memberState.lastModified).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+              : 'No activity yet';
+            const memberName = member.displayName || member.email?.split('@')[0] || 'Member';
+            return `
+              <section class="admin-user-card">
+                <div class="admin-user-top">
+                  <div>
+                    <div class="admin-user-name">${escapeHTML(memberName)}</div>
+                    <div class="admin-user-email">${escapeHTML(member.email || 'Email unavailable')}</div>
+                  </div>
+                  <span class="label">${total} session${total === 1 ? '' : 's'}</span>
+                </div>
+                <p class="admin-user-summary">Last activity: ${escapeHTML(lastActive)}<br>Breathing: ${memberState.breathingCompletions || 0} · Meditation: ${memberState.meditationCompletions || 0}</p>
+                ${MODULES.map(module => `
+                  <div class="admin-module-row">
+                    <span class="admin-module-name">Week ${module.id}: ${escapeHTML(module.name)}</span>
+                    <button class="admin-stepper" type="button" data-user-id="${escapeHTML(member.id)}" onclick="adminAdjustModule(this.dataset.userId, ${module.id}, -1)" aria-label="Remove one Week ${module.id} session from ${escapeHTML(memberName)}">−</button>
+                    <span class="admin-module-count">${memberState.moduleProgress[module.id] || 0}</span>
+                    <button class="admin-stepper" type="button" data-user-id="${escapeHTML(member.id)}" onclick="adminAdjustModule(this.dataset.userId, ${module.id}, 1)" aria-label="Add one Week ${module.id} session to ${escapeHTML(memberName)}">+</button>
+                  </div>
+                `).join('')}
+                <button class="admin-reset" type="button" data-user-id="${escapeHTML(member.id)}" data-user-name="${escapeHTML(memberName)}" onclick="adminResetUser(this.dataset.userId, this.dataset.userName)">Reset all progress</button>
+              </section>`;
+          }).join('');
+
+  return `
+    <div class="view" id="view-admin">
+      <div class="admin-header">
+        <p class="label mb-8">Administrator</p>
+        <h2>Member Progress</h2>
+        <p class="caption">Review sessions, make corrections, or reset an account.</p>
+      </div>
+      <p class="admin-notice">Changes here update the member’s account immediately. Reset requires confirmation.</p>
+      <button class="btn btn-secondary btn-small admin-refresh" type="button" onclick="adminUsersLoaded = false; refreshAdminUsers()">Refresh members</button>
+      ${content}
+    </div>`;
 }
 
 function renderPreview() {
@@ -1817,13 +2176,13 @@ function closeVideo() {
 
 function startWorkout() {
   state.activeModule = getActiveModule();
-  saveState();
+  saveState(false);
   navigate('preview');
 }
 
 function openPreview(moduleId) {
   state.activeModule = moduleId;
-  saveState();
+  saveState(false);
   navigate('preview');
 }
 
@@ -1984,7 +2343,7 @@ function submitFeedback() {
 }
 
 function skipFeedback() {
-  saveState();
+  saveState(false);
   navigate('home');
 }
 

@@ -1,8 +1,9 @@
 # Tai Chi for Barb
 
-A six-week tai chi program built for Barb, on her iPad. One HTML file,
-no build step, no dependencies. Progress is saved on the device in
-localStorage.
+A six-week tai chi program built for Barb and other members, with an
+iPad-friendly interface. It is a static site with no build step.
+Firebase Authentication gives each member an account, and progress is
+synced through Cloud Firestore with a local device backup.
 
 This is the light lotus build: watercolour lotus background, large
 readable text (nothing under 14px), high contrast black text on the
@@ -39,6 +40,9 @@ spec for the filenames so photos can be collected now.
 ## Files
 
 - `index.html` - the whole app
+- `firebase-sync.js` - account sign-in and cloud progress synchronization
+- `firestore.rules` - member isolation and administrator access rules
+- `firebase.json` / `.firebaserc` - Firebase rule deployment configuration
 - `img/` - Barb's exercise photos go here
 - `IMAGES_NEEDED.md` - photo checklist (104 files)
 - `VIDEOS_NEEDED.md` - video checklist
