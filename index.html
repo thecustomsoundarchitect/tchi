@@ -627,7 +627,7 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
   min-width: 180px;
   padding: 0 24px;
 }
-.feedback-view { padding-top: 48px; }
+.completion-view { padding-top: 48px; }
 .completion-message {
   position: relative;
   padding: 26px 24px;
@@ -649,34 +649,7 @@ p, .body { font-family: var(--font-body); font-size: var(--text-body); line-heig
 .completion-message h2 { margin: 0 36px 16px 0; font-size: 29px; }
 .completion-message p { color: var(--aubergine); margin-bottom: 16px; line-height: 1.65; }
 .completion-message p:last-child { margin-bottom: 0; }
-.feedback-prompt h3 { margin-bottom: 8px; }
-.feedback-prompt > p { color: var(--mauve); margin-bottom: 20px; }
-.feedback-textarea {
-  width: 100%;
-  padding: 16px;
-  border: 1.5px solid rgba(139, 107, 126, 0.2);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: var(--text-small);
-  resize: none;
-  margin-bottom: 16px;
-  background: var(--warm-surface);
-  color: var(--aubergine);
-}
-.feedback-textarea::placeholder { color: var(--mauve); opacity: 0.6; }
-.feedback-textarea:focus { outline: none; border-color: var(--aubergine); }
-.skip-link {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  font-size: var(--text-small);
-  color: var(--mauve);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-weight: 500;
-}
+.completion-home { margin-top: 24px; }
 .breathing-wash {
   position: fixed;
   inset: 0;
@@ -1002,7 +975,7 @@ body[data-view="home"] #page-bg {
   z-index: 0;
 }
 body[data-view="home"] #app { z-index: 1; }
-body[data-view="feedback"] #page-bg { opacity: 1; }
+body[data-view="completion"] #page-bg { opacity: 1; }
 body[data-view="player"] #app {
   padding-bottom: 0;
   overflow: hidden;
@@ -1418,7 +1391,6 @@ function createDefaultState() {
     moduleProgress: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
     moduleUnlocked: { 1: true, 2: false, 3: false, 4: false, 5: false, 6: false },
     calendar: [],
-    feedback: [],
     breathingSettings: { in: 4, out: 6, duration: 3, tone: false },
     meditationDurations: [30, 30, 30, 30, 30],
     meditationCompletions: 0,
@@ -1448,7 +1420,6 @@ function normalizeState(value) {
   normalized.moduleUnlocked = { ...defaults.moduleUnlocked, ...(next.moduleUnlocked || {}) };
   normalized.breathingSettings = { ...defaults.breathingSettings, ...(next.breathingSettings || {}) };
   normalized.calendar = Array.isArray(next.calendar) ? next.calendar : [];
-  normalized.feedback = Array.isArray(next.feedback) ? next.feedback : [];
   normalized.meditationCalendar = Array.isArray(next.meditationCalendar) ? next.meditationCalendar : [];
   normalized.meditationDurations = MEDITATION_TRACKS.map((_, index) =>
     Array.isArray(next.meditationDurations) ? (next.meditationDurations[index] || 30) : 30
@@ -1701,7 +1672,7 @@ function render() {
   else if (view === "admin" && currentUserIsAdmin) app.innerHTML = renderAdmin();
   else if (view === "preview") app.innerHTML = renderPreview();
   else if (view === "player") app.innerHTML = renderPlayer();
-  else if (view === "feedback") app.innerHTML = renderFeedback();
+  else if (view === "completion") app.innerHTML = renderCompletion();
   else if (view === "breathing") app.innerHTML = renderBreathing();
   else if (view === "breathing-settings") app.innerHTML = renderBreathingSettings();
   else if (view === "meditation") app.innerHTML = renderMeditation();
@@ -2036,22 +2007,16 @@ function renderPlayer() {
   `;
 }
 
-function renderFeedback() {
+function renderCompletion() {
   return `
-    <div class="view feedback-view" id="view-feedback">
+    <div class="view completion-view" id="view-completion">
       <section class="completion-message" aria-label="A message for Mom">
         <h2>Mom, you did it.</h2>
         <p>You showed up for yourself. You moved your body, you breathed, you rested when you needed to. That takes courage, especially after everything your body has been through.</p>
         <p>This is all for you, your health, your happiness, your strength. And you proved today that you have all of those things.</p>
         <p>I am so, so proud of you. Keep moving. Keep breathing. Keep being the amazing woman you are. I love you.</p>
       </section>
-      <section class="feedback-prompt">
-        <h3>How did that feel?</h3>
-        <p>Write anything you'd like to remember.</p>
-        <textarea class="feedback-textarea" rows="4" placeholder="Your thoughts..." id="feedback-note"></textarea>
-        <button class="btn btn-primary" onclick="submitFeedback()">Save</button>
-        <button class="skip-link" onclick="skipFeedback()">Skip</button>
-      </section>
+      <button class="btn btn-primary completion-home" onclick="navigate('home')">Back to Home</button>
     </div>
   `;
 }
@@ -2334,24 +2299,7 @@ function finishWorkout() {
   if (!state.calendar.includes(today)) state.calendar.push(today);
   checkUnlocks();
   saveState();
-  navigate('feedback');
-}
-
-// ===================== FEEDBACK =====================
-function submitFeedback() {
-  const note = document.getElementById('feedback-note')?.value || '';
-  state.feedback.push({
-    date: formatDate(new Date()),
-    module: state.activeModule,
-    note: note
-  });
-  saveState();
-  navigate('home');
-}
-
-function skipFeedback() {
-  saveState(false);
-  navigate('home');
+  navigate('completion');
 }
 
 // ===================== BREATHING =====================
