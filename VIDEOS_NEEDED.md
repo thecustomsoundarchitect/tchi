@@ -1,19 +1,18 @@
 # Videos needed
 
-Every exercise below has a blank video right now, on purpose.
-When a link is added and verified it goes into index.html in that
-exercise's video field (YouTube id only, not the full link).
+Each finished video is stored in `video/` as an MP4 and its file ID is
+added to the exercise's `video` field in `index.html`.
 
 ## Week 1
 
-- [ ] w1-01  Seated Mountain Pose
-- [ ] w1-02  Neck Rolls & Stretches
-- [ ] w1-03  Shoulder Circles
-- [ ] w1-04  Ankle & Foot Circles
-- [ ] w1-05  Wrist Circles & Hand Stretches
-- [ ] w1-06  Seated Marching
-- [ ] w1-07  Side Bends
-- [ ] w1-08  Gentle Torso Twists
+- [x] w1-01  Seated Mountain Pose
+- [x] w1-02  Neck Rolls & Stretches
+- [x] w1-03  Shoulder Circles
+- [x] w1-04  Ankle & Foot Circles
+- [x] w1-05  Wrist Circles & Hand Stretches
+- [x] w1-06  Seated Marching
+- [x] w1-07  Side Bends
+- [x] w1-08  Gentle Torso Twists
 
 ## Week 2
 
